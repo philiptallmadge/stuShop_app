@@ -1,25 +1,50 @@
-import logo from './logo.svg';
-import './App.css';
+// import { useEffect, useState } from "react";
+// import "./App.css";
 
-function App() {
+// function App() {
+//   const [employees, setEmployees] = useState([]);
+
+//   useEffect(() => {
+//     fetch("http://127.0.0.1:5000/employees")  // your Flask endpoint
+//       .then((response) => response.json())
+//       .then((data) => setEmployees(data))
+//       .catch((error) => console.error("Error fetching employees:", error));
+//   }, []);
+
+//   return (
+//     <div className="App">
+//       <h1>Welcome to StuShop</h1>
+//       <h2>Employee List:</h2>
+//       <ul>
+//         {employees.map((emp) => (
+//           <li key={emp.id}>
+//             {emp.first_name} {emp.last_name} — {emp.email}
+//           </li>
+//         ))}
+//       </ul>
+//     </div>
+//   );
+// }
+
+// export default App;
+
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import SignIn from "./components/SignIn";
+import CreateAccount from "./components/CreateAccount";
+// import EmployeeDashboard from "./components/EmployeeDashboard";
+// import OrganizationDashboard from "./components/OrganizationDashboard";
+// import CustomerPage from "./components/CustomerPage";
+
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<SignIn />} />
+        <Route path="/create-account" element={<CreateAccount />} />
+        {/* <Route path="/employee" element={<EmployeeDashboard />} />
+        <Route path="/organization" element={<OrganizationDashboard />} />
+        <Route path="/customer" element={<CustomerPage />} /> */}
+      </Routes>
+    </Router>
   );
 }
-
-export default App;
