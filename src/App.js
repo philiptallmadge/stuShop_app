@@ -31,6 +31,10 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SignIn from "./components/SignIn";
 import CreateAccount from "./components/CreateAccount";
+import ForgotPassword from "./components/ForgotPassword";
+import Employee from "./components/Employee";
+import Organization from "./components/Organization";
+
 // import EmployeeDashboard from "./components/EmployeeDashboard";
 // import OrganizationDashboard from "./components/OrganizationDashboard";
 // import CustomerPage from "./components/CustomerPage";
@@ -41,6 +45,9 @@ export default function App() {
       <Routes>
         <Route path="/" element={<SignIn />} />
         <Route path="/create-account" element={<CreateAccount />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/employee" element={<Employee />} />
+        <Route path="/organization" element={<Organization />} />
         {/* <Route path="/employee" element={<EmployeeDashboard />} />
         <Route path="/organization" element={<OrganizationDashboard />} />
         <Route path="/customer" element={<CustomerPage />} /> */}

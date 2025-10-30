@@ -89,6 +89,61 @@ def create_account():
         return jsonify({"error": str(e)}), 500
 
 
+@app.route("/change-password", methods=["POST"])
+def change_password():
+    data = request.get_json()
+    username = data.get("username")
+    new_password = data.get("new_password")
+
+    hashed = bcrypt.hashpw(new_password.encode("utf-8"), bcrypt.gensalt())
+
+    try:
+        cursor.execute("""
+            UPDATE accounts
+            SET password = %s
+            WHERE username = %s
+        """, (hashed, username))
+        conn.commit()
+
+        if cursor.rowcount == 0:
+            return jsonify({"error": "Username not found"}), 404
+
+        return jsonify({"message": "Password updated successfully"}), 200
+
+    except Exception as e:
+        print("Error:", e)
+        conn.rollback()
+        return jsonify({"error": str(e)}), 500
+    
+
+@app.route("/sign-in-authentication", methods=["POST"])
+def sign_in_authentication():
+    data = request.get_json()
+    username = data.get("username")
+    password = data.get("password")
+
+    try:
+        # Get both the hashed password and the level
+        cursor.execute("""
+            SELECT password, level FROM accounts WHERE username = %s
+        """, (username,))
+        result = cursor.fetchone()
+
+        if result and bcrypt.checkpw(password.encode("utf-8"), result["password"].encode("utf-8")):
+            # Successful login
+            return jsonify({
+                "message": "Authentication successful",
+                "level": result["level"]
+            }), 200
+        else:
+            # Invalid username or password
+            return jsonify({"error": "Invalid username or password"}), 401
+
+    except Exception as e:
+        print("Error:", e)
+        return jsonify({"error": str(e)}), 500
+    
+
 @app.route("/employees")
 def get_employees():
     cursor.execute("SELECT * FROM employees")

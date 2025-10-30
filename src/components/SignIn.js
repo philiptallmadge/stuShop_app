@@ -8,8 +8,31 @@ export default function SignIn() {
 
   const handleSignIn = (e) => {
     e.preventDefault();
-    // Temporary — later you’ll add backend authentication
-    console.log("Username:", username, "Password:", password);
+    const result = fetch("http://127.0.0.1:5000/sign-in-authentication", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+    result.then(async (res) => {
+      if (res.ok) {
+        const data = await res.json();
+        const level = data.level;
+        if (level === 1) {
+          navigate("/employee");
+        } else if (level === 2) {
+          navigate("/organization");
+        } else {
+          alert("Invalid user level.");
+        }
+      }
+      else {
+        alert("Invalid username or password.");
+      }
+    }).catch((err) => {
+      console.error("Error:", err);
+      alert("Server error.");
+    });
+    
   };
 
   return (
@@ -55,6 +78,12 @@ export default function SignIn() {
             className="text-blue-500 hover:underline"
           >
             I am a Customer
+          </button>
+          <button
+            onClick={() => navigate("/forgot-password")}
+            className="text-blue-500 hover:underline"
+          > 
+            Forgot Password
           </button>
         </div>
       </div>
