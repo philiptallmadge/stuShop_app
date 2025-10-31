@@ -42,7 +42,7 @@ export default function CreateAccount() {
     }
 
     try {
-      const res = await fetch("http://127.0.0.1:5000/create-account", {
+      const res = await fetch("http://129.74.153.235:5000/create-account", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

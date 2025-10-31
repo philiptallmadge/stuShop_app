@@ -4,7 +4,7 @@ export function getEmployees(token) {
         return apiRequest("/employees", "GET", null, token);
 }
 export function getEmployeeById(id,token) {
-    return apiRequest(`/employee/${id}`, "GET", null, token);
+    return apiRequest(`/employees/${id}`, "GET", null, token);
 }
 export function createEmployee(employee, token) {
     return apiRequest("/employees", "POST", employee, token)

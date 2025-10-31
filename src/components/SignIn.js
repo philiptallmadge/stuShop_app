@@ -8,7 +8,7 @@ export default function SignIn() {
 
   const handleSignIn = (e) => {
     e.preventDefault();
-    const result = fetch("http://127.0.0.1:5000/sign-in-authentication", {
+    const result = fetch("http://129.74.153.235:5000/sign-in-authentication", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
@@ -17,6 +17,8 @@ export default function SignIn() {
       if (res.ok) {
         const data = await res.json();
         const level = data.level;
+        const access_token = data.access_token;
+        localStorage.setItem("authToken", access_token);
         if (level === 1) {
           navigate("/employee");
         } else if (level === 2) {
@@ -26,6 +28,7 @@ export default function SignIn() {
         }
       }
       else {
+        console.log(username, password)
         alert("Invalid username or password.");
       }
     }).catch((err) => {
