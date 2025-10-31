@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # from flask import Flask, jsonify
 # from flask_cors import CORS
 # import mysql.connector
@@ -28,6 +29,8 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import mysql.connector
 import bcrypt
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
+
 
 app = Flask(__name__)
 CORS(app)
@@ -149,7 +152,30 @@ def get_employees():
     cursor.execute("SELECT * FROM employees")
     rows = cursor.fetchall()
     return jsonify(rows)
+@app.route("employees/<int:employee_id>")
+def get_employee_by_id(employee_id):
+    cursor.execute("Select * FROM employees where id = %s", (employee_id))
+    row = cursor.fetchone()
+    if not row:
+        return jsonify({"error": "Employee not found"}), 404
+    return jsonify(row)
+@app.route("/employees/<int:id>", methods=["PUT"])
+def update_employee(id):
+    data = request.get_json()
+    required_fields = ["first_name", "last_name", "email"]
+    for field in required_fields:
+        if field not in data or not data[field]:
+            return jsonify({"error": f"missing required field: {field}"}, 400)
+    cursor.execute("UPDATE employees set first_name = %s, last_name = %s, email = %s where id = %s", (data["first_name"], data["last_name"], data["email"], id))
+    conn.commit()
+    return jsonify({"message": "Employee updated successfully"}), 200
 
+@app.route("/employees/<int:id>", methods=["DELETE"])
+def delete_employee(id):
+    data = request.get_json()
+    cursor.execute("Delete em)
+    conn.commit()
+    return jsonify({"message": "Employee updated successfully"}), 200
 
 if __name__ == "__main__":
     print("Flask app is starting up")

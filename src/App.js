@@ -32,7 +32,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SignIn from "./components/SignIn";
 import CreateAccount from "./components/CreateAccount";
 import ForgotPassword from "./components/ForgotPassword";
-import Employee from "./components/Employee";
+import Employee from "./components/Employee/Employee";
 import Organization from "./components/Organization";
 
 // import EmployeeDashboard from "./components/EmployeeDashboard";
