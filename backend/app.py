@@ -4,7 +4,7 @@
 # import mysql.connector
 
 # app = Flask(__name__)
-# CORS(app)  # allows all origins to access your API
+# CORS(app) 
 
 # conn = mysql.connector.connect(
 #     host="localhost",
@@ -142,7 +142,7 @@ def sign_in_authentication():
         passd = result["password"].encode("utf-8")
         if result and bcrypt.checkpw(password.encode("utf-8"), result["password"].encode("utf-8")):
             access_token = create_access_token(
-                identity=result['id'],
+                identity=str(result['id']),
                 additional_claims={"role": result["level"]}
             )
             # Successful login
@@ -203,14 +203,14 @@ def delete_employee(id):
     except Exception as e:
         print("Error:", e)
         return jsonify({"error": str(e)}), 500
-'''
+
 @app.route("/organizations", methods = ["GET"])
 @jwt_required()
 def get_organizations():
-    current_user = get_jwt_identity()  # get info encoded in token (e.g., id, username, level)
+    current_user = get_jwt_identity()  
+    claims = get_jwt()
 
-    # current_user might be a dict, depending on how you create your JWT
-    if current_user.get("level") != 1:
+    if claims.get("role") != 1:
         return jsonify({"error": "Access denied: insufficient permissions"}), 403
 
     try:
@@ -221,27 +221,19 @@ def get_organizations():
     except Exception as e:
         print("Database error:", e)
         return jsonify({"error": str(e)}), 500
-'''
-@app.route("/organizations", methods=["GET"])
-@jwt_required()
-def get_organizations():
-    """Return all organizations (any authenticated user can view)."""
-    try:
-        cursor.execute("SELECT * FROM organizations")
-        rows = cursor.fetchall()
-        return jsonify(rows), 200
-    except Exception as e:
-        print("Error:", e)
-        return jsonify({"error": str(e)}), 500
-
 
 @app.route("/organizations/<int:org_id>", methods=["GET"])
 @jwt_required()
 def get_organization(org_id):
     """Return one organization by ID."""
     try:
-        cursor.execute("SELECT * FROM organizations WHERE id = %s", (org_id,))
-        row = cursor.fetchone()
+        claims = get_jwt()
+        user_level = claims.get("role")
+        user_id = get_jwt_identity()
+        
+        if user_level == 1 or (user_level == 2 and int(user_id) == (org_id,)): 
+            cursor.execute("SELECT * FROM organizations WHERE id = %s", (org_id,))
+            row = cursor.fetchone()
 
         if not row:
             return jsonify({"error": "Organization not found"}), 404
