@@ -26,3 +26,5 @@ backend/venv/
 *.pyc
 __pycache__/
 node_modules/
+
+venv/
