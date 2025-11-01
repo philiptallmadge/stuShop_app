@@ -136,13 +136,13 @@ def sign_in_authentication():
     try:
         # Get both the hashed password and the level
         cursor.execute("""
-            SELECT password, level FROM accounts WHERE username = %s
+            SELECT password, level, id FROM accounts WHERE username = %s
         """, (username,))
         result = cursor.fetchone()
-
+        passd = result["password"].encode("utf-8")
         if result and bcrypt.checkpw(password.encode("utf-8"), result["password"].encode("utf-8")):
             access_token = create_access_token(
-                identity=result['username'],
+                identity=result['id'],
                 additional_claims={"role": result["level"]}
             )
             # Successful login
@@ -169,7 +169,7 @@ def get_employees():
 @jwt_required()
 @app.route("/employees/<int:employee_id>")
 def get_employee_by_id(employee_id):
-    cursor.execute("Select * FROM employees where id = %s", (employee_id))
+    cursor.execute("Select * FROM employees where id = %s", (employee_id,))
     row = cursor.fetchone()
     if not row:
         return jsonify({"error": "Employee not found"}), 404
