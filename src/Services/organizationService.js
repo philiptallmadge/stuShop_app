@@ -24,3 +24,13 @@ export function updateOrganization(id, updates, token) {
 export function deleteOrganization(id, token) {
   return apiRequest(`/organizations/${id}`, "DELETE", null, token);
 }
+
+// Get all listings for an organization based on organization ID
+export function getListingsByOrganizationId(organizationId, token) {
+  return apiRequest(`/organizations/${organizationId}/listings`, "GET", null, token);
+}
+
+// Create a new listing for an organization
+export function createListingForOrganization(organizationId, listing, token) {
+  return apiRequest(`/organizations/${organizationId}/listings`, "POST", listing, token);
+}
