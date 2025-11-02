@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
-
+import { useNavigate } from "react-router-dom";
 import {getEmployeeById} from "../../Services/employeeService.js"
 import {getOrganizations, getOrganizationById} from "../../Services/organizationService.js"
+
 export default function Employee() {
+    const navigate = useNavigate();
     const [employee, setEmployee] = useState(null);
     const [organizations, setOrganizations] = useState([]);
     const [showOrgs, setShowOrgs] = useState(false);
@@ -87,6 +89,12 @@ export default function Employee() {
             ))}
           </select>
           <button onClick={() => fetchOrganizationById(organization)}>Show Organization</button>
+          <button
+          className="bg-green-500 text-white px-6 py-3 rounded-full hover:bg-green-600 transition"
+          onClick={() => navigate("/")}
+        >
+          Log out
+        </button>
         </div>
           
         {showOrg && (

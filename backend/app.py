@@ -230,15 +230,24 @@ def get_organization(org_id):
         claims = get_jwt()
         user_level = claims.get("role")
         user_id = get_jwt_identity()
-        
-        if user_level == 1 or (user_level == 2 and int(user_id) == (org_id,)): 
-            cursor.execute("SELECT * FROM organizations WHERE id = %s", (org_id,))
-            row = cursor.fetchone()
-
+        cursor.execute("SELECT * FROM organizations WHERE id = %s", (org_id,))
+        row = cursor.fetchone()
         if not row:
             return jsonify({"error": "Organization not found"}), 404
 
         return jsonify(row), 200
+
+    except Exception as e:
+        print("Error:", e)
+        return jsonify({"error": str(e)}), 500
+    
+@app.route("/organizations/<int:org_id>/listings", methods=["GET"])
+@jwt_required()
+def get_listings_by_org(org_id):
+    try:
+        cursor.execute("SELECT * FROM listings WHERE organization_id = %s", (org_id,))
+        rows = cursor.fetchall()
+        return jsonify(rows), 200
     except Exception as e:
         print("Error:", e)
         return jsonify({"error": str(e)}), 500
@@ -306,6 +315,36 @@ def update_organization(org_id):
         print("Error:", e)
         return jsonify({"error": str(e)}), 500
 
+@app.route("/organizations/<int:org_id>/listings", methods=["POST"])
+@jwt_required()
+def create_listing(org_id):
+    try:
+        data = request.get_json()
+        event_name = data.get("event_name")
+        description = data.get("description")
+        price = data.get("price")
+        qty = data.get("qty")
+        date_closure = data.get("date_closure")
+
+        if not event_name or not description or price is None:
+            return jsonify({"error": "Missing required fields"}), 400
+
+        # Insert into MySQL
+        cursor.execute(
+            """
+            INSERT INTO listings
+            (event_name, description, price, qty, date_closure, organization_id, state, date_created)
+            VALUES (%s, %s, %s, %s, %s, %s, 'pending', NOW())
+            """,
+            (event_name, description, price, qty, date_closure, org_id)
+        )
+        conn.commit()
+
+        return jsonify({"message": "Listing created successfully"}), 201
+
+    except Exception as e:
+        print("Error creating listing:", e)
+        return jsonify({"error": str(e)}), 500
 
 @app.route("/organizations/<int:org_id>", methods=["DELETE"])
 @jwt_required()

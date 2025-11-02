@@ -33,7 +33,8 @@ import SignIn from "./components/SignIn";
 import CreateAccount from "./components/CreateAccount";
 import ForgotPassword from "./components/ForgotPassword";
 import Employee from "./components/Employee/Employee";
-import Organization from "./components/Organization";
+import Organization from "./components/Organization/Organization";
+import NewListing from "./components/Organization/AddingListing";
 
 // import EmployeeDashboard from "./components/EmployeeDashboard";
 // import OrganizationDashboard from "./components/OrganizationDashboard";
@@ -48,6 +49,7 @@ export default function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/employee" element={<Employee />} />
         <Route path="/organization" element={<Organization />} />
+        <Route path="/organization/add-listing" element={<NewListing />} />
         {/* <Route path="/employee" element={<EmployeeDashboard />} />
         <Route path="/organization" element={<OrganizationDashboard />} />
         <Route path="/customer" element={<CustomerPage />} /> */}
