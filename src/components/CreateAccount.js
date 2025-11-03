@@ -61,6 +61,8 @@ export default function CreateAccount() {
   };
 
   return (
+    
+    
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-2xl shadow-md w-96">
         <h2 className="text-2xl font-semibold text-center mb-6">
@@ -183,7 +185,7 @@ export default function CreateAccount() {
 
         <div className="mt-6 text-center">
           <button
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/login")}
             className="text-blue-500 hover:underline"
           >
             Back to Sign In
