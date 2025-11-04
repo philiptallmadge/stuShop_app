@@ -365,6 +365,56 @@ def create_listing(org_id):
     except Exception as e:
         print("Error creating listing:", e)
         return jsonify({"error": str(e)}), 500
+    
+@app.route("/organizations/listings/<int:listing_id>", methods=["DELETE"])
+@jwt_required()
+def delete_listing(listing_id):
+    print("Delete listing endpoint hit")
+    print("Listing ID to delete:", listing_id)
+    try:
+        cursor.execute("DELETE FROM listings WHERE id = %s", (listing_id,))
+        conn.commit()
+
+        if cursor.rowcount == 0:
+            return jsonify({"error": "Listing not found"}), 404
+
+        return jsonify({"message": "Listing deleted successfully"}), 200
+
+    except Exception as e:
+        print("Error deleting listing:", e)
+        return jsonify({"error": str(e)}), 500
+    
+
+@app.route("/organizations/listings/<int:listing_id>", methods=["PUT"])
+@jwt_required()
+def update_listing(listing_id):
+    try:
+        data = request.get_json()
+        event_name = data.get("event_name")
+        description = data.get("description")
+        price = data.get("price")
+        qty = data.get("qty")
+        date_closure = data.get("date_closure")
+        state = data.get("state")
+
+        cursor.execute(
+            """
+            UPDATE listings
+            SET event_name = %s, description = %s, price = %s, qty = %s, date_closure = %s, state = %s
+            WHERE id = %s
+            """,
+            (event_name, description, price, qty, date_closure, state, listing_id)
+        )
+        conn.commit()
+
+        if cursor.rowcount == 0:
+            return jsonify({"error": "Listing not found"}), 404
+
+        return jsonify({"message": "Listing updated successfully"}), 200
+
+    except Exception as e:
+        print("Error updating listing:", e)
+        return jsonify({"error": str(e)}), 500
 
 @app.route("/organizations/<int:org_id>", methods=["DELETE"])
 @jwt_required()

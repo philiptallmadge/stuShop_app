@@ -154,7 +154,7 @@ export default function Employee() {
           <>
            <ul>
               {listings.map((lis) => (
-                <li key={lis.id}>{lis.id} | {lis.event_name} | {lis.paid}</li>
+                <li key={lis.id}>{lis.id} | {lis.event_name} | {lis.price}</li>
               ))}
             </ul>
         <select onChange={(e) => setListing(e.target.value)}>

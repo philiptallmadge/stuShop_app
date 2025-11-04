@@ -42,3 +42,11 @@ export function getOrdersByListing(listingId, token) {
 export function createListingForOrganization(organizationId, listing, token) {
   return apiRequest(`/organizations/${organizationId}/listings`, "POST", listing, token);
 }
+
+export function updateListing(listingId, updates, token) {
+  return apiRequest(`/organizations/listings/${listingId}`, "PUT", updates, token);
+}
+
+export function deleteListing(listingId, token) {
+  return apiRequest(`/organizations/listings/${listingId}`, "DELETE", null, token);
+}
