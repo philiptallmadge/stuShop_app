@@ -35,6 +35,8 @@ import ForgotPassword from "./components/ForgotPassword";
 import Employee from "./components/Employee/Employee";
 import Organization from "./components/Organization/Organization";
 import NewListing from "./components/Organization/AddingListing";
+import Home from "./components/Home/Home"
+import NavBar from "./components/Shared/NavBar"
 
 // import EmployeeDashboard from "./components/EmployeeDashboard";
 // import OrganizationDashboard from "./components/OrganizationDashboard";
@@ -43,8 +45,15 @@ import NewListing from "./components/Organization/AddingListing";
 export default function App() {
   return (
     <Router>
+
+      <NavBar />
+
       <Routes>
-        <Route path="/" element={<SignIn />} />
+
+        {/* <Route path="/" element={<SignIn />} /> */}
+        <Route path="/" element={<Home />} />
+
+        <Route  path="/login" element={<SignIn />} />
         <Route path="/create-account" element={<CreateAccount />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/employee" element={<Employee />} />
