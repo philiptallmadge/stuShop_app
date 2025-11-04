@@ -29,6 +29,14 @@ export function deleteOrganization(id, token) {
 export function getListingsByOrganizationId(organizationId, token) {
   return apiRequest(`/organizations/${organizationId}/listings`, "GET", null, token);
 }
+//Get all orders for an organization
+export function getOrdersByOrganizationId(organizationId, token) {
+  return apiRequest(`/organizations/${organizationId}/orders`, "GET", null, token);
+}
+//Get all orders for a listing
+export function getOrdersByListing(listingId, token) {
+  return apiRequest(`/organizations/listings/${listingId}/orders`, "GET", null, token);
+}
 
 // Create a new listing for an organization
 export function createListingForOrganization(organizationId, listing, token) {

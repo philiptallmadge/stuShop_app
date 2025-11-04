@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {getEmployeeById} from "../../Services/employeeService.js"
-import {getOrganizations, getOrganizationById} from "../../Services/organizationService.js"
+import {getOrganizations, getOrganizationById, getListingsByOrganizationId, getOrdersByListing} from "../../Services/organizationService.js"
 
 export default function Employee() {
     const navigate = useNavigate();
@@ -10,22 +10,60 @@ export default function Employee() {
     const [showOrgs, setShowOrgs] = useState(false);
     const [organization, setOrganization] = useState(null);
     const [showOrg, setShowOrg] = useState(false);
-    try {
-      const token = localStorage.getItem("authToken");
-      const userId = parseJwt(token).sub;
-    }
-    catch (err) {
-      console.error("Error fetching employee:", err);
-    }
-    const fetchOrganizationById = async (orgId) => {
+    const [listings, setListings] = useState([]);
+    const [showListings, setShowListings] = useState(false);
+    const [listing, setListing] = useState(false);
+    const [showOrders, setShowOrders] = useState(false);
+    const [orders, setOrders] = useState([]);
+    
+    /*
+    const fetchOrdersByOrganization = async (orgId) => {
+      try {
+          const token = localStorage.getItem("authToken");
+          console.log(orgId);
+          const data = await getOrdersByOrganizationId(orgId,token);
+          setListings(data);
+          setShowListings(true);
+      }
+      catch (err) {
+        console.error("Error fetching organizations:", err);
+      }
+    };*/
+    const fetchOrdersByListing = async (lisId) => {
         try {
           const token = localStorage.getItem("authToken");
-          const data = await getOrganizationById(orgId,token);
+          const data = await getOrdersByListing(lisId,token);
+          setOrders(data);
+          setShowOrders(true);
+      }
+      catch (err) {
+        console.error("Error fetching orders:", err);
+      }
+    };
+    const fetchListingsByOrganization = async (orgId) => {
+      try {
+          const token = localStorage.getItem("authToken");
+          const data = await getListingsByOrganizationId(orgId,token);
+          setListings(data);
+          setShowListings(true);
+      }
+      catch (err) {
+        console.error("Error fetching listings:", err);
+      }
+    };
+    const fetchOrganizationById = async (org) => {
+        if (!org) {
+          console.warn("No organization selected");
+          return
+        }
+        try {
+          const token = localStorage.getItem("authToken");
+          const data = await getOrganizationById(org,token);
           setOrganization(data);
           setShowOrg(true);
         }
         catch (err) {
-          console.error("Error fetching organizations:", err);
+          console.error("Error fetching org:", err);
         }
       };
     const fetchOrganizations = async () => {
@@ -65,48 +103,81 @@ export default function Employee() {
     }
     if (!employee) return <div>Loading...</div>;
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
-          <div className="bg-white p-8 rounded-2xl shadow-md w-96 text-center">
-            <h1 className="text-2xl font-bold mb-4">
+      <>
+        <div>
+          <div>
+            <h1>
               Welcome, {employee.first_name} {employee.last_name}!
             </h1>
             <p>Email: {employee.email}</p>
+            <button style = {{display: "block"}}
+          onClick={() => navigate("/")}
+            >
+              Log out
+            </button>
             <button onClick={fetchOrganizations}>
               Show Organizations
             </button>
             {showOrgs && (
+              <>
               <ul>
               {organizations.map((org) => (
-                <li key={org.id}>{org.id}{org.name} | {org.email}</li>
+                <li key={org.id}>{org.id} | {org.name}</li>
               ))}
             </ul>
-            )}
           <div>
-          <select onChange={(e) => setOrganization(e.target.value)}>
-            <option value="">Select Organization ID</option>
-            {organizations?.map((org) => (
-              <option key={org.id} value={org.id}>{org.id}</option>
-            ))}
-          </select>
-          <button onClick={() => fetchOrganizationById(organization)}>Show Organization</button>
-          <button
-          className="bg-green-500 text-white px-6 py-3 rounded-full hover:bg-green-600 transition"
-          onClick={() => navigate("/")}
-        >
-          Log out
-        </button>
-        </div>
-          
+            <select onChange={(e) => setOrganization(e.target.value)}>
+              <option value="">Select Organization ID</option>
+              {organizations?.map((org) => (
+                <option key={org.id} value={org.id}>{org.name}</option>
+              ))}
+            </select>
+            <button onClick={() => fetchOrganizationById(organization)}>Show Organization</button>
+          </div>
+          </>
+          )
+        }
         {showOrg && (
-          <div className="mt-2 p-2 border rounded">
+          <>
+          <div>
             <h2>{organization.name}</h2>
             <p>Email: {organization.email}</p>
             <p>Phone: {organization.phone_number}</p>
             <p>{organization.description}</p>
           </div>
+          </>
         )}
+        {showOrg && (<button onClick={() => fetchListingsByOrganization(organization.id)}>Show {organization.name} Listings</button>
+          )
+        }
+        {showOrg && showListings && (
+          <>
+           <ul>
+              {listings.map((lis) => (
+                <li key={lis.id}>{lis.id} | {lis.event_name} | {lis.paid}</li>
+              ))}
+            </ul>
+        <select onChange={(e) => setListing(e.target.value)}>
+            <option value="">Select Listing For Data</option>
+            {listings?.map((l) => (
+              <option key={l.id} value={l.id}>{l.event_name}</option>
+            ))}
+        </select>
+        <button onClick={() => fetchOrdersByListing(listing)}>Show Orders for Listing</button>
+        </>
+        )
+        }
+        {showOrg && showListings && showOrders && (
+          <ul>
+            {orders.map((ord) => (
+              <li key={ord.id}>{ord.id} | {ord.first_name} | {ord.last_name} | {ord.event_name} | {ord.paid}</li>
+            )) }
+          </ul>
+        )
+        }
           </div>
         </div>
+      </>
   );
  
 }

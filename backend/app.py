@@ -240,12 +240,32 @@ def get_organization(org_id):
     except Exception as e:
         print("Error:", e)
         return jsonify({"error": str(e)}), 500
-    
+@app.route("/organizations/<int:org_id>/orders", methods=["GET"])
+def get_orders_by_org(org_id):
+    try:
+        cursor.execute("SELECT orders.id, orders.first_name, orders.last_name, orders.grade, orders.listing_id, orders.event_name, orders.date_purchased, orders.size, orders.qty, orders.paid, orders.picture FROM orders, listings, organizations WHERE organizations.id = %s and listings.organization_id = %s and orders.listing_id = listings.id", (org_id,org_id,))
+        rows = cursor.fetchall()
+        return jsonify(rows), 200
+    except Exception as e:
+        print("Error:", e)
+        return jsonify({"error": str(e)}), 500
+
 @app.route("/organizations/<int:org_id>/listings", methods=["GET"])
 @jwt_required()
 def get_listings_by_org(org_id):
     try:
         cursor.execute("SELECT * FROM listings WHERE organization_id = %s", (org_id,))
+        rows = cursor.fetchall()
+        return jsonify(rows), 200
+    except Exception as e:
+        print("Error:", e)
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/organizations/listings/<int:listing_id>/orders", methods=["GET"])
+@jwt_required()
+def get_orders_by_listing(listing_id):
+    try:
+        cursor.execute("SELECT orders.* FROM listings, orders WHERE listings.id = %s and orders.listing_id = listings.id", (listing_id,))
         rows = cursor.fetchall()
         return jsonify(rows), 200
     except Exception as e:
