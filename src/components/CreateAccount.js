@@ -17,17 +17,38 @@ export default function CreateAccount() {
     username: "",
     password: "",
   });
+  const [customerData, setCustomerData] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    phone_number: "",
+    username: "",
+    password: "",
+  });
 
   const navigate = useNavigate();
 
+  // const handleChange = (e, isOrg = false) => {
+  //   const { name, value } = e.target;
+  //   if (isOrg) {
+  //     setOrgData({ ...orgData, [name]: value });
+  //   } else {
+  //     setEmployeeData({ ...employeeData, [name]: value });
+  //   } else {
+  //     setCustomerData({ ...customerData, [name]: value });
+  //   }
+  // };
   const handleChange = (e, isOrg = false) => {
-    const { name, value } = e.target;
-    if (isOrg) {
-      setOrgData({ ...orgData, [name]: value });
-    } else {
-      setEmployeeData({ ...employeeData, [name]: value });
-    }
-  };
+  const { name, value } = e.target;
+
+  if (level === "1") {
+    setEmployeeData({ ...employeeData, [name]: value });
+  } else if (level === "2") {
+    setOrgData({ ...orgData, [name]: value });
+  } else if (level === "3") {
+    setCustomerData({ ...customerData, [name]: value });
+  }
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,7 +57,10 @@ export default function CreateAccount() {
       formData = { level, ...employeeData };
     } else if (level === "2") {
       formData = { level, ...orgData };
-    } else {
+    } else if (level === "3") {
+      formData = { level, ...customerData };
+    }
+    else {
       alert("Please select a valid level");
       return;
     }
@@ -79,6 +103,8 @@ export default function CreateAccount() {
             <option value="">Select Account Type</option>
             <option value="1">Employee</option>
             <option value="2">Organization</option>
+            <option value="3">Customer</option>
+            
           </select>
 
           {level === "1" && (
@@ -174,6 +200,60 @@ export default function CreateAccount() {
               />
             </>
           )}
+          {level === "3" && (
+            <>
+              <input
+                name="first_name"
+                placeholder="First Name"
+                value={customerData.first_name}
+                onChange={handleChange}
+                className="border p-2 rounded-md"
+                required
+              />
+              <input
+                name="last_name"
+                placeholder="Last Name"
+                value={customerData.last_name}
+                onChange={handleChange}
+                className="border p-2 rounded-md"
+                required
+              />
+              <input
+                name="email"
+                type="email"
+                placeholder="Email"
+                value={customerData.email}
+                onChange={handleChange}
+                className="border p-2 rounded-md"
+                required
+              />
+              <input
+                name="phone_number"
+                placeholder="Phone Number"
+                value={customerData.phone_number}
+                onChange={handleChange}
+                className="border p-2 rounded-md"
+                required
+              />
+              <input
+                name="username"
+                placeholder="Username"
+                value={customerData.username}
+                onChange={handleChange}
+                className="border p-2 rounded-md"
+                required
+              />
+              <input
+                name="password"
+                type="password"
+                placeholder="Password"
+                value={customerData.password}
+                onChange={handleChange}
+                className="border p-2 rounded-md"
+                required
+              />
+            </>
+          )}  
 
           <button
             type="submit"

@@ -14,21 +14,44 @@ export default function SignIn() {
       body: JSON.stringify({ username, password }),
     });
     result.then(async (res) => {
+      // if (res.ok) {
+      //   const data = await res.json();
+      //   const level = data.level;
+      //   const access_token = data.access_token;
+      //   localStorage.setItem("authToken", access_token);
+      //   if (level === 1) {
+      //     navigate("/employee");
+      //   } else if (level === 2) {
+      //     navigate("/organization");
+      //   } else if level === 3 {
+      //     navigate("/customer");  
+      //   } else {
+      //     alert("Invalid user level.");
+      //   }
+      // }
+      // else {
+      //   console.log(username, password)
+      //   alert("Invalid username or password.");
+      // }
       if (res.ok) {
         const data = await res.json();
-        const level = data.level;
+        const level = String(data.level); 
         const access_token = data.access_token;
+
         localStorage.setItem("authToken", access_token);
-        if (level === 1) {
+        console.log("gabbys User level:", level);
+
+        if (level === "1") {
           navigate("/employee");
-        } else if (level === 2) {
+        } else if (level === "2") {
           navigate("/organization");
+        } else if (level === "3") {
+          console.log("Navigating to customer dashboard for gabby");
+          navigate("/customer");
         } else {
           alert("Invalid user level.");
         }
-      }
-      else {
-        console.log(username, password)
+      } else {
         alert("Invalid username or password.");
       }
     }).catch((err) => {
@@ -74,13 +97,6 @@ export default function SignIn() {
             className="text-blue-500 hover:underline"
           >
             Create Account
-          </button>
-
-          <button
-            onClick={() => navigate("/customer")}
-            className="text-blue-500 hover:underline"
-          >
-            I am a Customer
           </button>
           <button
             onClick={() => navigate("/forgot-password")}

@@ -34,7 +34,7 @@ from flask_jwt_extended import create_access_token
 
 
 app = Flask(__name__)
-
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 CORS(app)
 
 app.config["JWT_SECRET_KEY"] = "lealdiaztallmadge"  #use a secure random string in production
@@ -61,6 +61,7 @@ def create_account():
 
     hashed = bcrypt.hashpw(data.get("password").encode("utf-8"), bcrypt.gensalt())
     hashed_str = hashed.decode("utf-8")
+    print("current level:", level)
     try:
         if level == 1:  # Employee
             first_name = data.get("first_name")
@@ -80,6 +81,16 @@ def create_account():
                 INSERT INTO organizations (level, name, email, phone_number)
                 VALUES (%s, %s, %s, %s)
             """, (level, name, email, phone_number))
+        elif level == 3:  # Customer
+            first_name = data.get("first_name")
+            last_name = data.get("last_name")
+            email = data.get("email")
+            phone_number = data.get("phone_number")
+
+            cursor.execute("""
+                INSERT INTO customers (level, first_name, last_name, email, phone_number)
+                VALUES (%s, %s, %s, %s, %s)
+            """, (level, first_name, last_name, email, phone_number))   
         else:
             return jsonify({"error": "Invalid level"}), 400
 
@@ -207,15 +218,17 @@ def delete_employee(id):
 @app.route("/organizations", methods = ["GET"])
 @jwt_required()
 def get_organizations():
+    print("/organizations endpoint hit")
     current_user = get_jwt_identity()  
     claims = get_jwt()
 
-    if claims.get("role") != 1:
-        return jsonify({"error": "Access denied: insufficient permissions"}), 403
+    # if claims.get("role") != 1:
+    #     return jsonify({"error": "Access denied: insufficient permissions"}), 403
 
     try:
         cursor.execute("SELECT * FROM organizations")
         rows = cursor.fetchall()
+        print("Organizations data retrieved:", rows)
         return jsonify(rows), 200
 
     except Exception as e:
@@ -372,7 +385,13 @@ def delete_listing(listing_id):
     print("Delete listing endpoint hit")
     print("Listing ID to delete:", listing_id)
     try:
-        cursor.execute("DELETE FROM listings WHERE id = %s", (listing_id,))
+        # cursor.execute("DELETE FROM listings WHERE id = %s", (listing_id,))
+        # conn.commit()
+        cursor.execute("""
+            UPDATE listings
+            SET state = 'closed', date_closure = NOW()
+            WHERE id = %s
+        """, (listing_id,))
         conn.commit()
 
         if cursor.rowcount == 0:
@@ -388,22 +407,32 @@ def delete_listing(listing_id):
 @app.route("/organizations/listings/<int:listing_id>", methods=["PUT"])
 @jwt_required()
 def update_listing(listing_id):
+    print("Update listing endpoint hit")
     try:
         data = request.get_json()
         event_name = data.get("event_name")
         description = data.get("description")
         price = data.get("price")
+        # qty = data.get("qty")
         qty = data.get("qty")
-        date_closure = data.get("date_closure")
-        state = data.get("state")
-
+        if qty == "" or qty is None:
+            qty = None
+        else:
+            qty = int(qty)
+        date_closure = data.get("date")
+        state = "pending"  # or derive from data if needed
         cursor.execute(
             """
             UPDATE listings
-            SET event_name = %s, description = %s, price = %s, qty = %s, date_closure = %s, state = %s
-            WHERE id = %s
+            SET event_name=%s,
+                `state`=%s,
+                description=%s,
+                price=%s,
+                qty=%s,
+                date_closure=%s
+            WHERE id=%s
             """,
-            (event_name, description, price, qty, date_closure, state, listing_id)
+            (event_name, "pending", description, price, qty, date_closure, listing_id)
         )
         conn.commit()
 
@@ -435,6 +464,25 @@ def delete_organization(org_id):
         conn.commit()
 
         return jsonify({"message": "Organization deleted successfully"}), 200
+
+    except Exception as e:
+        print("Error:", e)
+        return jsonify({"error": str(e)}), 500
+    
+
+@app.route("/customer/<int:customer_id>", methods=["GET"])
+@jwt_required()
+def get_customer_by_id(customer_id):
+    print("Get customer by ID endpoint hit")
+    try:
+        cursor.execute("SELECT * FROM customers WHERE id = %s", (customer_id,))
+        row = cursor.fetchone()
+        if not row:
+            return jsonify({"error": "Customer not found"}), 404
+
+        print(jsonify(row))
+        print("Customer data retrieved:", row)
+        return jsonify(row), 200
 
     except Exception as e:
         print("Error:", e)

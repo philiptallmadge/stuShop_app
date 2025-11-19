@@ -1,33 +1,3 @@
-// import { useEffect, useState } from "react";
-// import "./App.css";
-
-// function App() {
-//   const [employees, setEmployees] = useState([]);
-
-//   useEffect(() => {
-//     fetch("http://127.0.0.1:5000/employees")  // your Flask endpoint
-//       .then((response) => response.json())
-//       .then((data) => setEmployees(data))
-//       .catch((error) => console.error("Error fetching employees:", error));
-//   }, []);
-
-//   return (
-//     <div className="App">
-//       <h1>Welcome to StuShop</h1>
-//       <h2>Employee List:</h2>
-//       <ul>
-//         {employees.map((emp) => (
-//           <li key={emp.id}>
-//             {emp.first_name} {emp.last_name} — {emp.email}
-//           </li>
-//         ))}
-//       </ul>
-//     </div>
-//   );
-// }
-
-// export default App;
-
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SignIn from "./components/SignIn";
 import CreateAccount from "./components/CreateAccount";
@@ -37,6 +7,7 @@ import Organization from "./components/Organization/Organization";
 import NewListing from "./components/Organization/AddingListing";
 import Home from "./components/Home/Home"
 import NavBar from "./components/Shared/NavBar"
+import Customer from "./components/Customer/Customer";
 
 // import EmployeeDashboard from "./components/EmployeeDashboard";
 // import OrganizationDashboard from "./components/OrganizationDashboard";
@@ -45,24 +16,23 @@ import NavBar from "./components/Shared/NavBar"
 export default function App() {
   return (
     <Router>
-
       <NavBar />
-
-      <Routes>
-
+      <div style={{ paddingTop: "80px" }}>
+        <Routes>
         {/* <Route path="/" element={<SignIn />} /> */}
-        <Route path="/" element={<Home />} />
-
-        <Route  path="/login" element={<SignIn />} />
-        <Route path="/create-account" element={<CreateAccount />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/employee" element={<Employee />} />
-        <Route path="/organization" element={<Organization />} />
-        <Route path="/organization/add-listing" element={<NewListing />} />
-        {/* <Route path="/employee" element={<EmployeeDashboard />} />
-        <Route path="/organization" element={<OrganizationDashboard />} />
-        <Route path="/customer" element={<CustomerPage />} /> */}
+          <Route path="/" element={<Home />} />
+          <Route  path="/login" element={<SignIn />} />
+          <Route path="/create-account" element={<CreateAccount />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/employee" element={<Employee />} />
+          <Route path="/organization" element={<Organization />} />
+          <Route path="/organization/add-listing" element={<NewListing />} />
+          <Route path="/customer" element={<Customer />} />
+          {/* <Route path="/employee" element={<EmployeeDashboard />} />
+          <Route path="/organization" element={<OrganizationDashboard />} />
+          <Route path="/customer" element={<CustomerPage />} /> */}
       </Routes>
+       </div>
     </Router>
   );
 }
