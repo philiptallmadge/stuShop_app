@@ -8,6 +8,8 @@ import NewListing from "./components/Organization/AddingListing";
 import Home from "./components/Home/Home"
 import NavBar from "./components/Shared/NavBar"
 import Customer from "./components/Customer/Customer";
+import CustomerSeeListings from "./components/Customer/SeeListings";
+import CustomerPlaceOrder from "./components/Customer/PlaceOrder";
 
 // import EmployeeDashboard from "./components/EmployeeDashboard";
 // import OrganizationDashboard from "./components/OrganizationDashboard";
@@ -28,6 +30,8 @@ export default function App() {
           <Route path="/organization" element={<Organization />} />
           <Route path="/organization/add-listing" element={<NewListing />} />
           <Route path="/customer" element={<Customer />} />
+          <Route path="/customer/org/:orgId" element={<CustomerSeeListings />} />
+          <Route path="/customer/listing/:listingId" element={<CustomerPlaceOrder />} />
           {/* <Route path="/employee" element={<EmployeeDashboard />} />
           <Route path="/organization" element={<OrganizationDashboard />} />
           <Route path="/customer" element={<CustomerPage />} /> */}
