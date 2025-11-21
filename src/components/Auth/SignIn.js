@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import styles from "./SignIn.module.css";
 
 export default function SignIn() {
   const [username, setUsername] = useState("");
@@ -62,45 +63,55 @@ export default function SignIn() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-2xl shadow-md w-96">
-        <h2 className="text-2xl font-semibold text-center mb-6">Sign In</h2>
+    // Replaced min-h-screen, flex, flex-col, etc.
+    <div className={styles.signInContainer}>
+      {/* Replaced bg-white, p-8, rounded-2xl, shadow-md, w-96 */}
+      <div className={styles.signInCard}>
+        {/* Replaced text-2xl, font-semibold, text-center, mb-6 */}
+        <h2 className={styles.signInHeader}>Sign In</h2>
 
-        <form onSubmit={handleSignIn} className="flex flex-col space-y-4">
+        {/* Replaced flex, flex-col, space-y-4 */}
+        <form onSubmit={handleSignIn} className={styles.signInForm}>
+          {/* Replaced border, p-2, rounded-md */}
           <input
             type="text"
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="border p-2 rounded-md"
+            className={styles.inputField}
           />
 
+          {/* Replaced border, p-2, rounded-md */}
           <input
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="border p-2 rounded-md"
+            className={styles.inputField}
           />
 
+          {/* Replaced bg-blue-500, text-white, rounded-md, p-2, hover:bg-blue-600, transition */}
           <button
             type="submit"
-            className="bg-blue-500 text-white rounded-md p-2 hover:bg-blue-600 transition"
+            className={styles.submitButton}
           >
             Sign In
           </button>
         </form>
 
-        <div className="mt-6 flex justify-between">
+        {/* Replaced mt-6, flex, justify-between */}
+        <div className={styles.linkGroup}>
+          {/* Replaced text-blue-500, hover:underline */}
           <button
             onClick={() => navigate("/create-account")}
-            className="text-blue-500 hover:underline"
+            className={styles.navLink}
           >
             Create Account
           </button>
+          {/* Replaced text-blue-500, hover:underline */}
           <button
             onClick={() => navigate("/forgot-password")}
-            className="text-blue-500 hover:underline"
+            className={styles.navLink}
           > 
             Forgot Password
           </button>

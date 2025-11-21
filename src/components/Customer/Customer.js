@@ -227,12 +227,16 @@ import React, { useState, useEffect } from "react";
 import { getCustomerById } from "../../Services/customerService.js";
 import { getOrganizations } from "../../Services/organizationService.js";
 import { useNavigate } from "react-router-dom";
+import styles from "./Customer.module.css"; 
 
 export default function Customer() {
   const navigate = useNavigate();
 
   const [customer, setCustomer] = useState(null);
   const [organizations, setOrganizations] = useState([]);
+  const [selectedOrg, setSelectedOrg] = useState(null);
+  const [orgListings, setOrgListings] = useState([]);
+  const [selectedListing, setSelectedListing] = useState(null); 
 
   function parseJwt(token) {
     try { return JSON.parse(atob(token.split(".")[1])); }
@@ -241,24 +245,34 @@ export default function Customer() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const token = localStorage.getItem("authToken");
-      if (!token) return;
-
-      const userId = parseJwt(token)?.sub;
-      const userData = await getCustomerById(userId, token);
-      setCustomer(userData);
-
-      const orgs = await getOrganizations(token);
-      setOrganizations(orgs);
+      try {
+        const token = localStorage.getItem("authToken");
+        if (!token) return;
+        const userId = parseJwt(token)?.sub;
+        const userData = await getCustomerById(userId, token);
+        setCustomer(userData);
+        const orgs = await getOrganizations(token);
+        setOrganizations(orgs);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      }
     };
-
     fetchData();
   }, []);
 
-  return (
-    <div>
-      <h1>Customer Dashboard</h1>
+  useEffect(() => {
+    if (!selectedOrg) return;
+    const token = localStorage.getItem("authToken");
+    if (!token) return;
+    getListingsByOrganizationId(selectedOrg.id, token)
+      .then((data) => setOrgListings(data))
+      .catch((err) => console.error("Error loading org listings:", err));
+    setSelectedListing(null);
+  }, [selectedOrg]);
 
+  return (
+    <div className={styles.customerContainer}>
+      <h1>Customer Dashboard</h1>
       {customer ? (
         <div>
           <p>Hey {customer.first_name}</p>
@@ -268,6 +282,70 @@ export default function Customer() {
         <p>Loading customer data...</p>
       )}
 
+      <div className={styles.contentLayout}>
+        <div className={styles.organizationsSection}>
+          <h2>Your Organizations</h2>
+          {organizations.length > 0 ? (
+            <div className={styles.organizationsList}>
+              {organizations.map((org) => (
+                <button
+                  key={org.id}
+                  className={`${styles.orgButton} ${selectedOrg?.id === org.id ? styles.active : ''}`}
+                  onClick={() => setSelectedOrg(org)}
+                >
+                  {org.name}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <p>No organizations found.</p>
+          )}
+        </div>
+
+        {selectedOrg && (
+          <div className={styles.detailsSection}>
+            <h3>Organization Details</h3>
+            <p><strong>Name:</strong> {selectedOrg.name}</p>
+            <p><strong>Email:</strong> {selectedOrg.email}</p>
+
+            <h4>Listings</h4>
+            {orgListings.length === 0 ? (
+              <p>No listings found.</p>
+            ) : (
+                // Add a class to the ul for styling
+              <ul className={styles.listingsList}> 
+                {orgListings.map(
+                  (listing) =>
+                    listing.state === "pending" && (
+                      <li
+                        key={listing.id}
+                        onClick={() => setSelectedListing(listing)}
+                        className={styles.listingItem}
+                      >
+                        {/* Wrap title and price in a span with a class */}
+                        <span className={styles.listingTitle}>
+                          <strong>{listing.event_name}</strong> — ${listing.price}
+                        </span>
+                        {/* Add a class to the description paragraph */}
+                        <p className={styles.listingDescription}>{listing.description}</p>
+                      </li>
+                    )
+                )}
+              </ul>
+            )}
+
+            {selectedListing && (
+              <div className={styles.listingDetailsBox}>
+                <h5>Listing Details</h5>
+                <p><strong>Name:</strong> {selectedListing.event_name}</p>
+                <p><strong>Price:</strong> ${selectedListing.price}</p>
+                <p><strong>Description:</strong> {selectedListing.description}</p>
+                <p><strong>Status:</strong> {selectedListing.state}</p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
       <h2>Your Organizations</h2>
 
       {organizations.length > 0 ? (
@@ -287,7 +365,7 @@ export default function Customer() {
       )}
 
       <button
-        className="bg-green-500 text-white px-6 py-3 rounded-full hover:bg-green-600 transition mt-4"
+        className={styles.logoutButton}
         onClick={() => navigate("/")}
       >
         Log out

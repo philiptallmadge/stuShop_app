@@ -1,0 +1,109 @@
+/* Color Palette */
+:root {
+  --primary-blue: #007bff; /* Bright Blue */
+  --light-blue: #e9f5ff;
+  --dark-blue: #0056b3;
+  --light-gray: #f3f4f6;
+  --border-color: #d1d5db;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  /* Green for the Create Account button (based on original Tailwind class) */
+  --submit-green: #10b981; /* bg-green-500 */
+  --submit-green-hover: #059669; /* hover:bg-green-600 */
+}
+
+/* Equivalent to: min-h-screen flex flex-col items-center justify-center bg-gray-100 */
+.createAccountContainer {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--light-gray);
+  padding: 20px;
+}
+
+/* Equivalent to: bg-white p-8 rounded-2xl shadow-md w-96 */
+.createAccountCard {
+  background-color: white;
+  padding: 2rem; 
+  border-radius: 1rem; 
+  box-shadow: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -2px var(--shadow-color); 
+  width: 100%;
+  max-width: 28rem; /* Set to w-96 which is 24rem, but increased slightly to accommodate more fields */
+}
+
+/* Equivalent to: text-2xl font-semibold text-center mb-6 */
+.createAccountHeader {
+  font-size: 1.5rem; 
+  font-weight: 600; 
+  text-align: center;
+  margin-bottom: 1.5rem; 
+  color: var(--dark-blue);
+}
+
+/* Equivalent to: flex flex-col space-y-4 */
+.createAccountForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* space-y-4 */
+}
+
+/* Input fields (Applies to inputs and the select element) */
+/* Equivalent to: border p-2 rounded-md */
+.inputField {
+  border: 1px solid var(--border-color);
+  padding: 0.75rem; 
+  border-radius: 0.375rem; 
+  transition: border-color 0.2s;
+  /* Required for select element to look right */
+  appearance: none; 
+}
+
+.inputField:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 1px var(--primary-blue);
+}
+
+/* Submit Button (Uses the green theme for this button) */
+/* Equivalent to: bg-green-500 text-white rounded-md p-2 hover:bg-green-600 transition */
+.submitButton {
+  background-color: var(--submit-green);
+  color: white;
+  border: none;
+  border-radius: 0.375rem; 
+  padding: 0.75rem; 
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 0.5rem; 
+}
+
+.submitButton:hover {
+  background-color: var(--submit-green-hover); 
+}
+
+/* Link Group */
+/* Equivalent to: mt-6 text-center */
+.linkGroup {
+  margin-top: 1.5rem; 
+  text-align: center; 
+}
+
+/* Navigation Link */
+/* Equivalent to: text-blue-500 hover:underline */
+.navLink {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--primary-blue);
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: text-decoration 0.2s, color 0.2s;
+}
+
+.navLink:hover {
+  text-decoration: underline;
+  color: var(--dark-blue);
+}

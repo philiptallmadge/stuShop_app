@@ -1,0 +1,100 @@
+/* Color Palette */
+:root {
+  --primary-blue: #007bff; /* Bright Blue */
+  --light-blue: #e9f5ff;  /* Very Light Blue for background */
+  --dark-blue: #0056b3;   /* Dark Blue for hover/accent */
+  --light-gray: #f3f4f6;  /* bg-gray-100 equivalent */
+  --border-color: #d1d5db; /* border equivalent */
+  --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Equivalent to: min-h-screen flex flex-col items-center justify-center bg-gray-100 */
+.signInContainer {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--light-gray);
+  padding: 20px;
+}
+
+/* Equivalent to: bg-white p-8 rounded-2xl shadow-md w-96 */
+.signInCard {
+  background-color: white;
+  padding: 2rem; /* p-8 */
+  border-radius: 1rem; /* rounded-2xl */
+  box-shadow: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -2px var(--shadow-color); /* shadow-md */
+  width: 100%;
+  max-width: 24rem; /* w-96 */
+}
+
+/* Equivalent to: text-2xl font-semibold text-center mb-6 */
+.signInHeader {
+  font-size: 1.5rem; /* text-2xl is 1.5rem */
+  font-weight: 600; /* font-semibold */
+  text-align: center;
+  margin-bottom: 1.5rem; /* mb-6 */
+  color: var(--dark-blue);
+}
+
+/* Equivalent to: flex flex-col space-y-4 */
+.signInForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* space-y-4 */
+}
+
+/* Equivalent to: border p-2 rounded-md */
+.inputField {
+  border: 1px solid var(--border-color);
+  padding: 0.5rem; /* p-2 */
+  border-radius: 0.375rem; /* rounded-md */
+  transition: border-color 0.2s;
+}
+
+.inputField:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 1px var(--primary-blue);
+}
+
+/* Equivalent to: bg-blue-500 text-white rounded-md p-2 hover:bg-blue-600 transition */
+.submitButton {
+  background-color: var(--primary-blue);
+  color: white;
+  border: none;
+  border-radius: 0.375rem; /* rounded-md */
+  padding: 0.5rem; /* p-2 */
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submitButton:hover {
+  background-color: var(--dark-blue); /* hover:bg-blue-600 */
+}
+
+/* Equivalent to: mt-6 flex justify-between */
+.linkGroup {
+  margin-top: 1.5rem; /* mt-6 */
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Equivalent to: text-blue-500 hover:underline */
+.navLink {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--primary-blue);
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 0.875rem; /* Adjust font size if necessary */
+  transition: text-decoration 0.2s, color 0.2s;
+}
+
+.navLink:hover {
+  text-decoration: underline;
+  color: var(--dark-blue);
+}
