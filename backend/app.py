@@ -442,5 +442,5 @@ def delete_organization(org_id):
 
 if __name__ == "__main__":
     print("Flask app is starting up")
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5001)
 
