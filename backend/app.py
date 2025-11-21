@@ -35,7 +35,8 @@ from flask_jwt_extended import create_access_token
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
-CORS(app)
+# CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+# CORS(app)
 
 app.config["JWT_SECRET_KEY"] = "lealdiaztallmadge"  #use a secure random string in production
 app.config["JWT_TOKEN_LOCATION"] = ["headers"]
@@ -43,19 +44,29 @@ app.config["JWT_ACCESS_TOKEN_EXPIRES"] = 3600 #1 hr exp
 
 
 jwt = JWTManager(app)
-conn = mysql.connector.connect(
-    host="localhost",
-    user="mleal2",
-    password="Bepagy09_",
-    database="mleal2"
-)
-cursor = conn.cursor(dictionary=True)
-cursor.execute("SELECT * FROM employees")
-rows = cursor.fetchall()
-print("Initial employees data:", rows)
+# conn = mysql.connector.connect(
+#     host="localhost",
+#     user="mleal2",
+#     password="Bepagy09_",
+#     database="mleal2"
+# )
+# cursor = conn.cursor(dictionary=True)
+# cursor.execute("SELECT * FROM employees")
+# rows = cursor.fetchall()
+# print("Initial employees data:", rows)
+
+def get_db_connection():
+    return mysql.connector.connect(
+        host="localhost",
+        user="mleal2",
+        password="Bepagy09_",
+        database="mleal2"
+    )
 
 @app.route("/create-account", methods=["POST"])
 def create_account():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
     data = request.get_json()
     level = int(data.get("level"))
 
@@ -113,6 +124,8 @@ def create_account():
 
 @app.route("/change-password", methods=["POST"])
 def change_password():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
     data = request.get_json()
     username = data.get("username")
     new_password = data.get("new_password")
@@ -140,6 +153,8 @@ def change_password():
 
 @app.route("/sign-in-authentication", methods=["POST"])
 def sign_in_authentication():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
     data = request.get_json()
     username = data.get("username")
     password = data.get("password")
@@ -174,19 +189,28 @@ def sign_in_authentication():
 @app.route("/employees")
 @jwt_required()
 def get_employees():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
     cursor.execute("SELECT * FROM employees")
     rows = cursor.fetchall()
     return jsonify(rows)
+
 @jwt_required()
 @app.route("/employees/<int:employee_id>")
 def get_employee_by_id(employee_id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
     cursor.execute("Select * FROM employees where id = %s", (employee_id,))
     row = cursor.fetchone()
     if not row:
         return jsonify({"error": "Employee not found"}), 404
     return jsonify(row)
+
+
 @app.route("/employees/<int:id>", methods=["PUT"])
 def update_employee(id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
     data = request.get_json()
     required_fields = ["first_name", "last_name", "email"]
     for field in required_fields:
@@ -199,6 +223,8 @@ def update_employee(id):
 @app.route("/employees/<int:id>", methods=["DELETE"])
 @jwt_required()
 def delete_employee(id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
     current_user = get_jwt_identity()
     claims = get_jwt()
     level = claims.get("level", 0)
@@ -218,6 +244,9 @@ def delete_employee(id):
 @app.route("/organizations", methods = ["GET"])
 @jwt_required()
 def get_organizations():
+    """Return all organizations."""
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
     print("/organizations endpoint hit")
     current_user = get_jwt_identity()  
     claims = get_jwt()
@@ -238,6 +267,8 @@ def get_organizations():
 @app.route("/organizations/<int:org_id>", methods=["GET"])
 @jwt_required()
 def get_organization(org_id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
     """Return one organization by ID."""
     try:
         claims = get_jwt()
@@ -255,6 +286,8 @@ def get_organization(org_id):
         return jsonify({"error": str(e)}), 500
 @app.route("/organizations/<int:org_id>/orders", methods=["GET"])
 def get_orders_by_org(org_id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
     try:
         cursor.execute("SELECT orders.id, orders.first_name, orders.last_name, orders.grade, orders.listing_id, orders.event_name, orders.date_purchased, orders.size, orders.qty, orders.paid, orders.picture FROM orders, listings, organizations WHERE organizations.id = %s and listings.organization_id = %s and orders.listing_id = listings.id", (org_id,org_id,))
         rows = cursor.fetchall()
@@ -266,6 +299,8 @@ def get_orders_by_org(org_id):
 @app.route("/organizations/<int:org_id>/listings", methods=["GET"])
 @jwt_required()
 def get_listings_by_org(org_id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
     try:
         cursor.execute("SELECT * FROM listings WHERE organization_id = %s", (org_id,))
         rows = cursor.fetchall()
@@ -277,6 +312,8 @@ def get_listings_by_org(org_id):
 @app.route("/organizations/listings/<int:listing_id>/orders", methods=["GET"])
 @jwt_required()
 def get_orders_by_listing(listing_id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
     try:
         cursor.execute("SELECT orders.* FROM listings, orders WHERE listings.id = %s and orders.listing_id = listings.id", (listing_id,))
         rows = cursor.fetchall()
@@ -289,6 +326,8 @@ def get_orders_by_listing(listing_id):
 @app.route("/organizations", methods=["POST"])
 @jwt_required()
 def create_organization():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
     """Create a new organization (restricted to role == 1)."""
     claims = get_jwt()
     role = claims.get("role", 0)
@@ -320,6 +359,8 @@ def create_organization():
 @app.route("/organizations/<int:org_id>", methods=["PUT"])
 @jwt_required()
 def update_organization(org_id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
     """Update organization (restricted to role == 1)."""
     claims = get_jwt()
     role = claims.get("role", 0)
@@ -351,6 +392,8 @@ def update_organization(org_id):
 @app.route("/organizations/<int:org_id>/listings", methods=["POST"])
 @jwt_required()
 def create_listing(org_id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
     try:
         data = request.get_json()
         event_name = data.get("event_name")
@@ -382,6 +425,8 @@ def create_listing(org_id):
 @app.route("/organizations/listings/<int:listing_id>", methods=["DELETE"])
 @jwt_required()
 def delete_listing(listing_id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
     print("Delete listing endpoint hit")
     print("Listing ID to delete:", listing_id)
     try:
@@ -407,6 +452,8 @@ def delete_listing(listing_id):
 @app.route("/organizations/listings/<int:listing_id>", methods=["PUT"])
 @jwt_required()
 def update_listing(listing_id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
     print("Update listing endpoint hit")
     try:
         data = request.get_json()
@@ -448,6 +495,8 @@ def update_listing(listing_id):
 @app.route("/organizations/<int:org_id>", methods=["DELETE"])
 @jwt_required()
 def delete_organization(org_id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
     """Delete organization (restricted to role == 1)."""
     claims = get_jwt()
     role = claims.get("role", 0)
@@ -473,6 +522,8 @@ def delete_organization(org_id):
 @app.route("/customer/<int:customer_id>", methods=["GET"])
 @jwt_required()
 def get_customer_by_id(customer_id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
     print("Get customer by ID endpoint hit")
     try:
         cursor.execute("SELECT * FROM customers WHERE id = %s", (customer_id,))
@@ -486,6 +537,49 @@ def get_customer_by_id(customer_id):
 
     except Exception as e:
         print("Error:", e)
+        return jsonify({"error": str(e)}), 500
+    
+@app.route("/add_order", methods=["POST"])
+def create_order():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        data = request.get_json()
+        first_name = data.get("first_name")
+        last_name = data.get("last_name")
+        grade = data.get("grade")
+        size = data.get("size", "none")
+        qty = data.get("qty", 1)
+        listing_id = data.get("listing_id")
+        event_name = data.get("event_name")
+        paid = data.get("price")
+        picture = data.get("picture", "")
+        status = data.get("status")
+        owner_id = data.get("owner_id")
+
+        if not first_name or not last_name or not grade or not listing_id or not event_name or paid is None:
+            return jsonify({"error": "Missing required fields"}), 400
+
+        cursor.execute(
+            """
+            INSERT INTO orders
+            (first_name, last_name, grade, size, qty, listing_id, event_name, paid, picture, status, owner_id, date_purchased)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
+            """,
+            (first_name, last_name, grade, size, qty, listing_id, event_name, paid, picture, status, owner_id)
+        )
+
+        if size:
+            cursor.execute(
+                "UPDATE listings SET qty = qty - %s WHERE id = %s AND qty IS NOT NULL",
+                (qty, listing_id)
+            )
+        conn.commit()
+
+        return jsonify({"message": "Order created successfully"}), 201
+
+    except Exception as e:
+        print("Error creating order:", e)
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":

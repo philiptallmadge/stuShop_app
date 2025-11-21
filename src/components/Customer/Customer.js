@@ -1,15 +1,16 @@
-
 // import React, { useState, useEffect } from "react";
-// import { getCustomerById } from "../../Services/customerService.js";
+// import { getCustomerById, addOrder } from "../../Services/customerService.js";
 // import { getOrganizations, getListingsByOrganizationId } from "../../Services/organizationService.js";
 // import { useNavigate } from "react-router-dom";
 
 // export default function Customer() {
 //   const navigate = useNavigate();
+
 //   const [customer, setCustomer] = useState(null);
 //   const [organizations, setOrganizations] = useState([]);
 //   const [selectedOrg, setSelectedOrg] = useState(null);
 //   const [orgListings, setOrgListings] = useState([]);
+//   const [selectedListing, setSelectedListing] = useState(null);
 
 //   function parseJwt(token) {
 //     try {
@@ -19,7 +20,7 @@
 //     }
 //   }
 
-//   // Fetch customer & organizations on mount
+//   // Load customer info + organizations
 //   useEffect(() => {
 //     const fetchData = async () => {
 //       try {
@@ -41,7 +42,7 @@
 //     fetchData();
 //   }, []);
 
-//   // Fetch listings every time selectedOrg changes
+//   // Load listings when organization changes
 //   useEffect(() => {
 //     if (!selectedOrg) return;
 
@@ -51,8 +52,47 @@
 //     getListingsByOrganizationId(selectedOrg.id, token)
 //       .then((data) => setOrgListings(data))
 //       .catch((err) => console.error("Error loading org listings:", err));
+
+//     setSelectedListing(null);
 //   }, [selectedOrg]);
-//     console.log(orgListings);
+
+//   const handleOrderSubmit = async (e) => {
+//     e.preventDefault();
+
+//     const formData = new FormData(e.target);
+//     const size = formData.get("size");
+//     const token = localStorage.getItem("authToken");
+//         if (!token) return;
+
+//     const userId = parseJwt(token)?.sub;
+
+//     const data = {
+//       first_name: formData.get("first_name"),
+//       last_name: formData.get("last_name"),
+//       grade: formData.get("grade"),
+//       size: size ? size : "none",
+//       qty: parseInt(formData.get("qty")) ? parseInt(formData.get("qty")) : 1,
+//       listing_id: selectedListing.id,
+//       event_name: selectedListing.event_name,
+//       price: selectedListing.price,
+//       status: size ? "pending" : "completed", // Auto-complete if size is missing
+//       owner_id: userId,
+//     };
+
+//     try {
+//       const response = await addOrder(data, localStorage.getItem("authToken"));
+//       console.log("Order creation response:", response);
+//       if (response.message === "Order created successfully") {
+//         alert("Order submitted successfully!");
+//         e.target.reset();
+//         setSelectedListing(null);
+//       } else {
+//         alert("Error submitting order.");
+//       }
+//     } catch (error) {
+//       console.error("Order creation error:", error);
+//     }
+//   };
 
 //   return (
 //     <div>
@@ -93,33 +133,87 @@
 //           }}
 //         >
 //           <h3>Organization Details</h3>
-//           <p>
-//             <strong>Name:</strong> {selectedOrg.name}
-//           </p>
-//           <p>
-//             <strong>Email:</strong> {selectedOrg.email}
-//           </p>
+//           <p><strong>Name:</strong> {selectedOrg.name}</p>
+//           <p><strong>Email:</strong> {selectedOrg.email}</p>
 
 //           <h4>Listings</h4>
 //           {orgListings.length === 0 ? (
 //             <p>No listings found.</p>
 //           ) : (
 //             <ul>
-//             {orgListings.map((listing) =>
-//                 listing.state === "pending" && (  // only render if pending
-//                 <li key={listing.id}>
-//                     <strong>{listing.event_name}</strong> — ${listing.price}
-//                     <p>{listing.description}</p>
-//                 </li>
-//                 )
-//             )}
+//               {orgListings.map(
+//                 (listing) =>
+//                   listing.state === "pending" && (
+//                     <li
+//                       key={listing.id}
+//                       onClick={() => setSelectedListing(listing)}
+//                       style={{
+//                         cursor: "pointer",
+//                         marginBottom: "15px",
+//                         padding: "10px",
+//                         border: "1px solid #ddd",
+//                       }}
+//                     >
+//                       <strong>{listing.event_name}</strong> — ${listing.price}
+//                       <p>{listing.description}</p>
+//                     </li>
+//                   )
+//               )}
 //             </ul>
+//           )}
+
+//           {selectedListing && (
+//             <div
+//               style={{
+//                 marginTop: "20px",
+//                 padding: "10px",
+//                 border: "1px solid #ccc",
+//               }}
+//             >
+//               <h5>Listing Details</h5>
+//               <p><strong>Name:</strong> {selectedListing.event_name}</p>
+//               <p><strong>Price:</strong> ${selectedListing.price}</p>
+//               <p><strong>Description:</strong> {selectedListing.description}</p>
+//               <p><strong>Status:</strong> {selectedListing.state}</p>
+
+//               <form
+//                 onSubmit={handleOrderSubmit}
+//                 style={{ display: "grid", gap: "10px", marginTop: "10px" }}
+//               >
+//                 <label>
+//                   First Name:
+//                   <input type="text" name="first_name" required />
+//                 </label>
+
+//                 <label>
+//                   Last Name:
+//                   <input type="text" name="last_name" required />
+//                 </label>
+
+//                 <label>
+//                   Grade:
+//                   <input type="text" name="grade" />
+//                 </label>
+
+//                 <label>
+//                   Size:
+//                   <input type="text" name="size" />
+//                 </label>
+
+//                 <label>
+//                   Quantity:
+//                   <input type="number" name="qty" min="1" defaultValue="1" />
+//                 </label>
+
+//                 <button type="submit">Submit Order</button>
+//               </form>
+//             </div>
 //           )}
 //         </div>
 //       )}
 
 //       <button
-//         className="bg-green-500 text-white px-6 py-3 rounded-full hover:bg-green-600 transition"
+//         className="bg-green-500 text-white px-6 py-3 rounded-full hover:bg-green-600 transition mt-4"
 //         onClick={() => navigate("/")}
 //       >
 //         Log out
@@ -128,63 +222,38 @@
 //   );
 // }
 
+
 import React, { useState, useEffect } from "react";
 import { getCustomerById } from "../../Services/customerService.js";
-import { getOrganizations, getListingsByOrganizationId } from "../../Services/organizationService.js";
+import { getOrganizations } from "../../Services/organizationService.js";
 import { useNavigate } from "react-router-dom";
 
 export default function Customer() {
   const navigate = useNavigate();
+
   const [customer, setCustomer] = useState(null);
   const [organizations, setOrganizations] = useState([]);
-  const [selectedOrg, setSelectedOrg] = useState(null);
-  const [orgListings, setOrgListings] = useState([]);
-  const [selectedListing, setSelectedListing] = useState(null); // <-- add this
 
   function parseJwt(token) {
-    try {
-      return JSON.parse(atob(token.split(".")[1]));
-    } catch (e) {
-      return null;
-    }
+    try { return JSON.parse(atob(token.split(".")[1])); }
+    catch { return null; }
   }
 
-  // Fetch customer & organizations on mount
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const token = localStorage.getItem("authToken");
-        if (!token) return;
+      const token = localStorage.getItem("authToken");
+      if (!token) return;
 
-        const userId = parseJwt(token)?.sub;
+      const userId = parseJwt(token)?.sub;
+      const userData = await getCustomerById(userId, token);
+      setCustomer(userData);
 
-        const userData = await getCustomerById(userId, token);
-        setCustomer(userData);
-
-        const orgs = await getOrganizations(token);
-        setOrganizations(orgs);
-      } catch (err) {
-        console.error("Error fetching data:", err);
-      }
+      const orgs = await getOrganizations(token);
+      setOrganizations(orgs);
     };
 
     fetchData();
   }, []);
-
-  // Fetch listings whenever selectedOrg changes
-  useEffect(() => {
-    if (!selectedOrg) return;
-
-    const token = localStorage.getItem("authToken");
-    if (!token) return;
-
-    getListingsByOrganizationId(selectedOrg.id, token)
-      .then((data) => setOrgListings(data))
-      .catch((err) => console.error("Error loading org listings:", err));
-
-    // Reset selected listing when changing organization
-    setSelectedListing(null);
-  }, [selectedOrg]);
 
   return (
     <div>
@@ -200,13 +269,14 @@ export default function Customer() {
       )}
 
       <h2>Your Organizations</h2>
+
       {organizations.length > 0 ? (
         <div>
           {organizations.map((org) => (
             <button
               key={org.id}
+              onClick={() => navigate(`/customer/org/${org.id}`)}
               style={{ display: "block", marginBottom: "10px" }}
-              onClick={() => setSelectedOrg(org)}
             >
               {org.name}
             </button>
@@ -214,59 +284,6 @@ export default function Customer() {
         </div>
       ) : (
         <p>No organizations found.</p>
-      )}
-
-      {/* Organization details + listings */}
-      {selectedOrg && (
-        <div
-          style={{
-            marginTop: "20px",
-            padding: "10px",
-            border: "1px solid #ccc",
-          }}
-        >
-          <h3>Organization Details</h3>
-          <p><strong>Name:</strong> {selectedOrg.name}</p>
-          <p><strong>Email:</strong> {selectedOrg.email}</p>
-
-          <h4>Listings</h4>
-          {orgListings.length === 0 ? (
-            <p>No listings found.</p>
-          ) : (
-            <ul>
-              {orgListings.map(
-                (listing) =>
-                  listing.state === "pending" && (
-                    <li
-                      key={listing.id}
-                      onClick={() => setSelectedListing(listing)}
-                      style={{ cursor: "pointer", marginBottom: "10px" }}
-                    >
-                      <strong>{listing.event_name}</strong> — ${listing.price}
-                      <p>{listing.description}</p>
-                    </li>
-                  )
-              )}
-            </ul>
-          )}
-
-          {/* Display selected listing details */}
-          {selectedListing && (
-            <div
-              style={{
-                marginTop: "20px",
-                padding: "10px",
-                border: "1px solid #ccc",
-              }}
-            >
-              <h5>Listing Details</h5>
-              <p><strong>Name:</strong> {selectedListing.event_name}</p>
-              <p><strong>Price:</strong> ${selectedListing.price}</p>
-              <p><strong>Description:</strong> {selectedListing.description}</p>
-              <p><strong>Status:</strong> {selectedListing.state}</p>
-            </div>
-          )}
-        </div>
       )}
 
       <button
@@ -278,4 +295,5 @@ export default function Customer() {
     </div>
   );
 }
+
 
