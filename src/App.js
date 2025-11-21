@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import SignIn from "./components/SignIn";
-import CreateAccount from "./components/CreateAccount";
-import ForgotPassword from "./components/ForgotPassword";
+import SignIn from "./components/Auth/SignIn";
+import CreateAccount from "./components/Auth/CreateAccount";
+import ForgotPassword from "./components/Auth/ForgotPassword";
 import Employee from "./components/Employee/Employee";
 import Organization from "./components/Organization/Organization";
 import NewListing from "./components/Organization/AddingListing";

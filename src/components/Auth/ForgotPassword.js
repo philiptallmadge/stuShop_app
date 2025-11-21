@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import styles from "./ForgotPassword.module.css";
 
 export default function ForgotPassword() {
     const [newData, setnewData] = useState({
@@ -31,30 +32,37 @@ export default function ForgotPassword() {
     }
   }
 
-    return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
-        <div className="bg-white p-8 rounded-2xl shadow-md w-96">
-            <h2 className="text-2xl font-semibold text-center mb-6">Forgot Password</h2>
-            <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+   return (
+    // Replaced: min-h-screen flex flex-col items-center justify-center bg-gray-100
+    <div className={styles.forgotPasswordContainer}>
+        {/* Replaced: bg-white p-8 rounded-2xl shadow-md w-96 */}
+        <div className={styles.formCard}>
+            {/* Replaced: text-2xl font-semibold text-center mb-6 */}
+            <h2 className={styles.formHeader}>Forgot Password</h2>
+            {/* Replaced: flex flex-col space-y-4 */}
+            <form onSubmit={handleSubmit} className={styles.passwordForm}>
+                {/* Replaced: border p-2 rounded-md */}
                 <input
                     type="text"
                     placeholder="Username"
                     name="username"
                     value={newData.username}
                     onChange={handleChange}
-                    className="border p-2 rounded-md"
+                    className={styles.inputField}
                 />
+                {/* Replaced: border p-2 rounded-md */}
                 <input
                     type="password"
                     placeholder="New Password"
                     name="new_password"
                     value={newData.new_password}
                     onChange={handleChange}
-                    className="border p-2 rounded-md"
+                    className={styles.inputField}
                 />
+                {/* Replaced: bg-blue-500 text-white rounded-md p-2 hover:bg-blue-600 transition */}
                 <button
                     type="submit"
-                    className="bg-blue-500 text-white rounded-md p-2 hover:bg-blue-600 transition"
+                    className={styles.submitButton}
                 >
                     Change Password
                 </button>
@@ -62,6 +70,5 @@ export default function ForgotPassword() {
         </div>
     </div>
   );
-
 
 }

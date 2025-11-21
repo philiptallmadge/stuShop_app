@@ -132,6 +132,7 @@ import React, { useState, useEffect } from "react";
 import { getCustomerById } from "../../Services/customerService.js";
 import { getOrganizations, getListingsByOrganizationId } from "../../Services/organizationService.js";
 import { useNavigate } from "react-router-dom";
+import styles from "./Customer.module.css";
 
 export default function Customer() {
   const navigate = useNavigate();

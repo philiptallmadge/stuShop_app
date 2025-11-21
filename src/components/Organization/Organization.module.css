@@ -1,0 +1,291 @@
+/* Color Palette */
+:root {
+  --primary-blue: #007bff;
+  --dark-blue: #0056b3;
+  --light-gray-bg: #f3f4f6; /* bg-gray-100 */
+  --card-bg: white;
+  --border-color: #e5e7eb; /* light border */
+  --text-gray-dark: #4b5563; /* text-gray-600 */
+  --text-gray-light: #6b7280; /* text-gray-500 */
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --error-red: #ef4444; /* bg-red-500 */
+  --error-red-hover: #dc2626; /* hover:bg-red-600 */
+  --success-green: #22c55e; /* bg-green-500 */
+  --success-green-hover: #16a34a; /* hover:bg-green-600 */
+}
+
+/* 1. Main Container and Layout */
+/* Equivalent to: min-h-screen flex flex-col items-center justify-start bg-gray-100 p-6 */
+.organizationContainer {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  background-color: var(--light-gray-bg);
+  padding: 1.5rem; /* p-6 */
+}
+
+/* Welcome Card */
+/* Equivalent to: bg-white p-8 rounded-2xl shadow-md w-96 text-center mb-6 */
+.welcomeCard {
+  background-color: var(--card-bg);
+  padding: 2rem; /* p-8 */
+  border-radius: 1rem; /* rounded-2xl */
+  box-shadow: 0 4px 6px -1px var(--shadow-color); /* shadow-md */
+  width: 100%;
+  max-width: 24rem; /* w-96 */
+  text-align: center;
+  margin-bottom: 1.5rem; /* mb-6 */
+}
+
+/* Welcome Header */
+/* Equivalent to: text-2xl font-bold mb-4 */
+.welcomeHeader {
+  font-size: 1.5rem; /* text-2xl */
+  font-weight: bold;
+  margin-bottom: 1rem; /* mb-4 */
+  color: var(--dark-blue);
+}
+
+/* 2. Listings Grid (Two Columns) */
+/* Equivalent to: w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 */
+.listingsGrid {
+  width: 100%;
+  max-width: 72rem; /* max-w-6xl */
+  display: grid;
+  grid-template-columns: 1fr; /* Default to 1 column */
+  gap: 1.5rem; /* gap-6 */
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .listingsGrid {
+    grid-template-columns: repeat(2, 1fr); /* md:grid-cols-2 */
+  }
+}
+
+/* Listing Column (Pending/Closed) */
+/* Equivalent to: bg-white p-6 rounded-2xl shadow-md */
+.listingColumn {
+  background-color: var(--card-bg);
+  padding: 1.5rem; /* p-6 */
+  border-radius: 1rem; /* rounded-2xl */
+  box-shadow: 0 4px 6px -1px var(--shadow-color);
+}
+
+/* Column Headers */
+.pendingHeader {
+  font-size: 1.25rem; /* text-xl */
+  font-weight: 600; /* font-semibold */
+  margin-bottom: 1rem; /* mb-4 */
+  color: var(--primary-blue); /* text-blue-600 */
+}
+
+.closedHeader {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--text-gray-dark); /* text-gray-600 */
+}
+
+.noListingText {
+  color: var(--text-gray-light); /* text-gray-500 */
+  font-style: italic;
+}
+
+/* Listings List */
+/* Equivalent to: space-y-3 */
+.listingsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; /* space-y-3 */
+}
+
+/* Individual Listing Item */
+/* Equivalent to: p-4 border rounded-xl shadow-sm text-left */
+.listingItem {
+  padding: 1rem; /* p-4 */
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem; /* rounded-xl */
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+  text-align: left;
+  background-color: #fff;
+}
+
+/* Listing Display Elements */
+.listingTitle {
+  font-weight: bold;
+  font-size: 1.125rem; /* text-lg */
+  color: var(--dark-blue);
+}
+
+.listingDescription {
+  color: var(--text-gray-dark); /* text-gray-600 */
+  margin-top: 0.25rem;
+}
+
+.listingDetails {
+  color: var(--dark-blue); /* text-gray-800 */
+  font-weight: 600; /* font-semibold */
+  margin-top: 0.25rem; /* mt-1 */
+}
+
+/* 3. Action Buttons (View Mode) */
+/* Equivalent to: flex gap-2 mt-3 */
+.actionButtons {
+  display: flex;
+  gap: 0.5rem; /* gap-2 */
+  margin-top: 0.75rem; /* mt-3 */
+}
+
+/* Edit Button */
+/* Equivalent to: bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 */
+.editButton {
+  background-color: var(--primary-blue);
+  color: white;
+  padding: 0.25rem 0.75rem; /* px-3 py-1 */
+  border-radius: 0.25rem; /* rounded */
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.editButton:hover {
+  background-color: var(--dark-blue);
+}
+
+/* Delete Button */
+.deleteButton {
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.25rem;
+  color: white;
+  border: none;
+  transition: background-color 0.2s;
+}
+.deleteButtonEnabled {
+  background-color: var(--error-red);
+}
+.deleteButtonEnabled:hover {
+  background-color: var(--error-red-hover);
+}
+.deleteButtonDisabled {
+  background-color: var(--text-gray-dark); /* bg-gray-400 */
+  cursor: not-allowed;
+}
+
+/* 4. Edit Form Styles (Within Listing Item) */
+
+.editFormContainer {
+    /* Replaces flex-1, ensures the form takes full space */
+    width: 100%;
+}
+
+/* Edit Input Field */
+/* Equivalent to: border rounded p-1 mb-1 w-full */
+.editInput {
+  border: 1px solid var(--border-color);
+  border-radius: 0.25rem;
+  padding: 0.25rem; /* p-1 */
+  margin-bottom: 0.25rem; /* mb-1 */
+  width: 100%;
+}
+
+/* Edit Text Area */
+/* Equivalent to: border rounded p-1 w-full */
+.editTextArea {
+  border: 1px solid var(--border-color);
+  border-radius: 0.25rem;
+  padding: 0.25rem;
+  width: 100%;
+  resize: vertical;
+  min-height: 4rem;
+}
+
+/* Edit/Cancel Buttons Container */
+/* Equivalent to: flex gap-2 mt-2 */
+.editButtonContainer {
+  display: flex;
+  gap: 0.5rem; /* gap-2 */
+  margin-top: 0.5rem; /* mt-2 */
+}
+
+/* Save Button */
+/* Equivalent to: bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 */
+.saveButton {
+  background-color: var(--success-green);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.25rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.saveButton:hover {
+  background-color: var(--success-green-hover);
+}
+
+/* Cancel Button */
+/* Equivalent to: bg-gray-400 text-white px-3 py-1 rounded hover:bg-gray-500 */
+.cancelButton {
+  background-color: var(--text-gray-dark);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.25rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.cancelButton:hover {
+  background-color: #6b7280; /* Slightly darker gray hover */
+}
+
+/* 5. Footer Buttons */
+/* Equivalent to: mt-6 flex gap-4 */
+.footerButtons {
+  margin-top: 1.5rem; /* mt-6 */
+  display: flex;
+  gap: 1rem; /* gap-4 */
+}
+
+/* Standard Button Styles (Refresh, Create, Logout) */
+.refreshButton,
+.createListingButton,
+.logoutButton {
+  padding: 0.75rem 1.5rem; /* px-6 py-3 */
+  border-radius: 9999px; /* rounded-full */
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-weight: 500;
+}
+
+/* Refresh Button */
+/* Equivalent to: bg-gray-400 text-white px-6 py-3 rounded-full hover:bg-gray-500 transition */
+.refreshButton {
+  background-color: var(--text-gray-dark);
+}
+.refreshButton:hover {
+  background-color: #6b7280;
+}
+
+/* Create Listing Button */
+/* Equivalent to: bg-blue-500 text-white px-6 py-3 rounded-full hover:bg-blue-600 transition */
+.createListingButton {
+  background-color: var(--primary-blue);
+}
+.createListingButton:hover {
+  background-color: var(--dark-blue);
+}
+
+/* Log out Button */
+/* Equivalent to: bg-green-500 text-white px-6 py-3 rounded-full hover:bg-green-600 transition */
+.logoutButton {
+  background-color: var(--success-green);
+}
+.logoutButton:hover {
+  background-color: var(--success-green-hover);
+}

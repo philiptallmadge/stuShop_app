@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createListingForOrganization } from "../../Services/organizationService.js";
+import styles from "./AddingListing.module.css"
 
 export default function AddingListing() {
   const navigate = useNavigate();

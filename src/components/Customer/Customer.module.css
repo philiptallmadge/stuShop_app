@@ -1,0 +1,156 @@
+/* Color Palette: Various shades of blue for a professional look */
+:root {
+  --primary-blue: #007bff; /* Bright Blue */
+  --light-blue: #e9f5ff;  /* Very Light Blue for backgrounds */
+  --dark-blue: #0056b3;   /* Dark Blue for hover/accent */
+  --text-color: #333;
+  --border-color: #ccc;
+}
+
+/* General Layout and Typography */
+.customerContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  color: var(--text-color);
+}
+
+h1, h2, h3, h4, h5 {
+  color: var(--dark-blue);
+  border-bottom: 2px solid var(--light-blue);
+  padding-bottom: 5px;
+  margin-top: 15px;
+  margin-bottom: 15px; /* Added margin for better spacing */
+}
+
+/* Flexbox for Organization Sections */
+.contentLayout {
+  display: flex;
+  gap: 30px; /* Space between organization list and details */
+  margin-top: 20px;
+}
+
+.organizationsSection {
+  flex: 1; /* Takes up 1 part of the space */
+  min-width: 250px;
+  padding: 15px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--light-blue);
+}
+
+.detailsSection {
+  flex: 3; /* Takes up 3 parts of the space (Wider) */
+  padding: 20px;
+  border: 1px solid var(--primary-blue);
+  border-radius: 8px;
+  background-color: white;
+}
+
+
+/* Buttons (Organization Selectors) */
+.orgButton {
+  display: block; 
+  width: 100%;
+  padding: 10px 15px;
+  margin-bottom: 10px; 
+  border: none;
+  border-radius: 4px;
+  background-color: var(--primary-blue);
+  color: white;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.orgButton:hover {
+  background-color: var(--dark-blue);
+  transform: translateY(-1px);
+}
+
+.orgButton.active {
+    background-color: var(--dark-blue);
+    font-weight: bold;
+}
+
+/* Listings specific styling */
+.listingsList {
+  list-style: none; /* Remove default bullet points */
+  padding: 0;      /* Remove default padding (indent) */
+  margin: 0;       /* Remove default margin */
+}
+
+.listingItem {
+  display: block; /* Ensures the item takes full width and border works */
+  padding: 10px;
+  margin-bottom: 8px; /* Slightly less margin between items */
+  border-left: 5px solid transparent; 
+  cursor: pointer; 
+  transition: border-left 0.3s, background-color 0.3s; /* Removed color transition from here */
+  background-color: #fff; /* Ensure white background by default */
+  text-align: left;
+}
+
+.listingItem:hover {
+  background-color: var(--light-blue);
+  border-left: 5px solid var(--primary-blue);
+}
+
+/* New classes for specific text elements to control underlining */
+.listingTitle {
+  display: block; /* Ensures it takes its own line */
+  font-weight: bold;
+  color: var(--text-color); /* Default text color */
+  transition: color 0.3s, text-decoration 0.3s;
+  margin-bottom: 2px; /* Small space between title and description */
+}
+
+.listingDescription {
+  display: block; /* Ensures it takes its own line */
+  font-size: 0.9em;
+  color: #666; /* Slightly lighter for description */
+  transition: color 0.3s, text-decoration 0.3s;
+}
+
+/* Hover effect for text: only underline the text itself, not the whole li */
+.listingItem:hover .listingTitle,
+.listingItem:hover .listingDescription {
+  text-decoration: underline;
+  color: var(--primary-blue); /* Text turns blue on hover */
+}
+
+
+/* Listing Details Box */
+.listingDetailsBox {
+    margin-top: 20px; 
+    padding: 15px;
+    border: 1px solid var(--primary-blue);
+    border-radius: 6px;
+    background-color: var(--light-blue);
+}
+
+/* Logout Button (Replicating the original Tailwind classes) */
+.logoutButton {
+    background-color: #10B981; 
+    color: white; 
+    padding: 12px 24px; 
+    border-radius: 9999px; 
+    transition: background-color 0.15s ease-in-out; 
+    margin-top: 16px; 
+    border: none;
+    cursor: pointer;
+    display: block; 
+}
+
+.logoutButton:hover {
+    background-color: #059669; 
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+  .contentLayout {
+    flex-direction: column;
+    gap: 15px;
+  }
+}

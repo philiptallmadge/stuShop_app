@@ -11,6 +11,7 @@ import {
   updateListing,
   deleteListing,
 } from "../../Services/organizationService.js";
+import styles from "./Organization.module.css";
 
 
 export default function Organization() {

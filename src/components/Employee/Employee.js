@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {getEmployeeById} from "../../Services/employeeService.js"
 import {getOrganizations, getOrganizationById, getListingsByOrganizationId, getOrdersByListing} from "../../Services/organizationService.js"
+import styles from "./Employee.module.css"
 
 export default function Employee() {
     const navigate = useNavigate();
