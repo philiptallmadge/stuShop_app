@@ -32,6 +32,8 @@ nav {
     font-size: 2rem;
     font-weight: bold;
     margin-right: auto; /* Push menu items to the right */
+    border-bottom: none !important;
+    padding-bottom: 0 !important;
   }
   
   /* Navigation list */

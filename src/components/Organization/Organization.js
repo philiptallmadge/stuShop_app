@@ -113,50 +113,56 @@ export default function Organization() {
   const renderListing = (listing, canEdit = true) => (
   <li
     key={listing.id}
-    className="p-4 border rounded-xl shadow-sm text-left"
+    className={styles.listingItem} 
   >
     {editingListing === listing.id && canEdit ? (
-      <div className="flex-1">
+      
+      <div className={styles.editFormContainer}>
+        {/* Replaced: border rounded p-1 mb-1 w-full */}
         <input
-          className="border rounded p-1 mb-1 w-full"
+          className={styles.editInput}
           name="event_name"
           value={editForm.event_name}
           onChange={handleEditChange}
         />
         <input
-          className="border rounded p-1 mb-1 w-full"
+          className={styles.editInput}
           name="price"
           value={editForm.price}
           onChange={handleEditChange}
         />
         <input
-          className="border rounded p-1 mb-1 w-full"
+          className={styles.editInput}
           name="qty"
           value={editForm.qty}
           onChange={handleEditChange}
         />
         <input
           type="date"
-          className="border rounded p-1 mb-1 w-full"
+          className={styles.editInput}
           name="date"
           value={editForm.date}
           onChange={handleEditChange}
         />
+        {/* Replaced: border rounded p-1 w-full */}
         <textarea
-          className="border rounded p-1 w-full"
+          className={styles.editTextArea}
           name="description"
           value={editForm.description}
           onChange={handleEditChange}
         />
-        <div className="flex gap-2 mt-2">
+        {/* Replaced: flex gap-2 mt-2 */}
+        <div className={styles.editButtonContainer}>
+          {/* Replaced: bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 */}
           <button
-            className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+            className={styles.saveButton}
             onClick={handleUpdateListing}
           >
             Save
           </button>
+          {/* Replaced: bg-gray-400 text-white px-3 py-1 rounded hover:bg-gray-500 */}
           <button
-            className="bg-gray-400 text-white px-3 py-1 rounded hover:bg-gray-500"
+            className={styles.cancelButton}
             onClick={() => setEditingListing(null)}
           >
             Cancel
@@ -166,27 +172,30 @@ export default function Organization() {
     ) : (
       <>
         <div>
-          <h3 className="font-bold text-lg">{listing.event_name}</h3>
-          <p className="text-gray-600">{listing.description}</p>
-          <p className="text-gray-800 font-semibold mt-1">
+          {/* Replaced: font-bold text-lg */}
+          <h3 className={styles.listingTitle}>{listing.event_name}</h3>
+          {/* Replaced: text-gray-600 */}
+          <p className={styles.listingDescription}>{listing.description}</p>
+          {/* Replaced: text-gray-800 font-semibold mt-1 */}
+          <p className={styles.listingDetails}>
             Price: ${listing.price} | Quantity: {listing.qty}
           </p>
         </div>
 
         {canEdit && (
-          <div className="flex gap-2 mt-3">
+          <div className={styles.actionButtons}> 
+            {/* Replaced: bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 */}
             <button
-              className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+              className={styles.editButton}
               onClick={() => handleEditClick(listing)}
             >
               Edit
             </button>
+            {/* The delete button needs dynamic classes */}
             <button
-              className={`${
-                isDeleting
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-red-500 hover:bg-red-600"
-              } text-white px-3 py-1 rounded transition`}
+              className={`${styles.deleteButton} ${
+                isDeleting ? styles.deleteButtonDisabled : styles.deleteButtonEnabled
+              }`}
               onClick={() => handleDeleteListing(listing.id)}
               disabled={isDeleting}
             >
@@ -206,63 +215,74 @@ export default function Organization() {
   const closedListings = listings.filter(listing => listing.state === "closed");
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-start bg-gray-100 p-6">
-      <div className="bg-white p-8 rounded-2xl shadow-md w-96 text-center mb-6">
-        <h1 className="text-2xl font-bold mb-4">
+    // FIX: Removed comment before this div.
+    <div className={styles.organizationContainer}>
+      {/* Replaced: bg-white p-8 rounded-2xl shadow-md w-96 text-center mb-6 */}
+      <div className={styles.welcomeCard}>
+        {/* Replaced: text-2xl font-bold mb-4 */}
+        <h1 className={styles.welcomeHeader}>
           Welcome, {organization.name}!
         </h1>
       </div>
 
-      <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        {/* Pending Listings Column */}
-        <div className="bg-white p-6 rounded-2xl shadow-md">
-          <h2 className="text-xl font-semibold mb-4 text-blue-600">
+      {/* Replaced: w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 */}
+      <div className={styles.listingsGrid}>
+        {/* Pending Listings Column - Replaced: bg-white p-6 rounded-2xl shadow-md */}
+        <div className={styles.listingColumn}>
+          {/* Replaced: text-xl font-semibold mb-4 text-blue-600 */}
+          <h2 className={styles.pendingHeader}>
             Pending Listings ({pendingListings.length})
           </h2>
 
           {pendingListings.length === 0 ? (
-            <p className="text-gray-500">No pending listings.</p>
+            // FIX: Removed comment before this element
+            <p className={styles.noListingText}>No pending listings.</p>
           ) : (
-            <ul className="space-y-3">
-              {/* {pendingListings.map(renderListing, true)} */}
+            // FIX: Removed comment before this element
+            <ul className={styles.listingsList}>
               {pendingListings.map((listing) => renderListing(listing, true))}
             </ul>
           )}
         </div>
 
-        {/* Closed Listings Column */}
-        <div className="bg-white p-6 rounded-2xl shadow-md">
-          <h2 className="text-xl font-semibold mb-4 text-gray-600">
+        {/* Closed Listings Column - Replaced: bg-white p-6 rounded-2xl shadow-md */}
+        <div className={styles.listingColumn}>
+          {/* Replaced: text-xl font-semibold mb-4 text-gray-600 */}
+          <h2 className={styles.closedHeader}>
             Closed Listings ({closedListings.length})
           </h2>
 
           {closedListings.length === 0 ? (
-            <p className="text-gray-500">No closed listings.</p>
+            <p className={styles.noListingText}>No closed listings.</p>
           ) : (
-            <ul className="space-y-3">
+            <ul className={styles.listingsList}>
               {closedListings.map((listing) => renderListing(listing, false))}
             </ul>
           )}
         </div>
       </div>
 
-      <div className="mt-6 flex gap-4">
+      {/* Replaced: mt-6 flex gap-4 */}
+      <div className={styles.footerButtons}>
+        {/* Refresh Button - Replaced: bg-gray-400 text-white px-6 py-3 rounded-full hover:bg-gray-500 transition */}
         <button
-          className="bg-gray-400 text-white px-6 py-3 rounded-full hover:bg-gray-500 transition"
+          className={styles.refreshButton}
           onClick={() => window.location.reload()}
         >
           Refresh Listings
         </button>
 
+        {/* Create Listing Button - Replaced: bg-blue-500 text-white px-6 py-3 rounded-full hover:bg-blue-600 transition */}
         <button
-          className="bg-blue-500 text-white px-6 py-3 rounded-full hover:bg-blue-600 transition"
+          className={styles.createListingButton}
           onClick={() => navigate("/organization/add-listing")}
         >
           Create New Listing
         </button>
 
+        {/* Log out Button - Replaced: bg-green-500 text-white px-6 py-3 rounded-full hover:bg-green-600 transition */}
         <button
-          className="bg-green-500 text-white px-6 py-3 rounded-full hover:bg-green-600 transition"
+          className={styles.logoutButton}
           onClick={() => navigate("/")}
         >
           Log out
