@@ -49,7 +49,7 @@ export default function Customer() {
   return (
     <div className={styles.customerContainer}>
       
-      <h2>Your Organizations</h2>
+      <h2>School Wide Organizations</h2>
 
       {organizations.length > 0 ? (
         <div>
@@ -66,6 +66,13 @@ export default function Customer() {
       ) : (
         <p>No organizations found.</p>
       )}
+
+      <button
+        className={styles.logoutButton}
+        onClick={() => navigate("/customer/cart")}
+      >
+        Shopping Cart
+      </button>
 
       <button
         className={styles.logoutButton}

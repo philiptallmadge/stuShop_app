@@ -16,7 +16,44 @@ export default function PlaceOrder() {
     catch { return null; }
   }
 
-  const handleOrderSubmit = async (e) => {
+  // const handleOrderSubmit = async (e) => {
+  //   e.preventDefault();
+  //   const formData = new FormData(e.target);
+
+  //   const token = localStorage.getItem("authToken");
+  //   if (!token) return;
+
+  //   const userId = parseJwt(token)?.sub;
+  //   const size = formData.get("size");
+
+  //   const data = {
+  //     first_name: formData.get("first_name"),
+  //     last_name: formData.get("last_name"),
+  //     grade: formData.get("grade"),
+  //     size: size || "none",
+  //     qty: parseInt(formData.get("qty")) || 1,
+  //     listing_id: selectedListing.id,
+  //     event_name: selectedListing.event_name,
+  //     price: selectedListing.price,
+  //     status: size ? "pending" : "completed",
+  //     owner_id: userId,
+  //   };
+
+  //   try {
+  //     const response = await addOrder(data, token);
+
+  //     if (response.message === "Order created successfully") {
+  //       alert("Order submitted successfully!");
+  //       e.target.reset();
+  //       navigate("/customer"); // go back
+  //     } else {
+  //       alert("Error submitting order.");
+  //     }
+  //   } catch (err) {
+  //     console.error("Order creation error:", err);
+  //   }
+  // };
+  const handleOrderSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
 
@@ -24,34 +61,29 @@ export default function PlaceOrder() {
     if (!token) return;
 
     const userId = parseJwt(token)?.sub;
-    const size = formData.get("size");
 
     const data = {
       first_name: formData.get("first_name"),
       last_name: formData.get("last_name"),
       grade: formData.get("grade"),
-      size: size || "none",
+      size: formData.get("size") || "none",
       qty: parseInt(formData.get("qty")) || 1,
       listing_id: selectedListing.id,
       event_name: selectedListing.event_name,
       price: selectedListing.price,
-      status: size ? "pending" : "completed",
+      description: selectedListing.description,
+      status: "pending",
       owner_id: userId,
     };
 
-    try {
-      const response = await addOrder(data, token);
+    // --- Save to shopping cart ---
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    cart.push(data);
+    localStorage.setItem("cart", JSON.stringify(cart));
 
-      if (response.message === "Order created successfully") {
-        alert("Order submitted successfully!");
-        e.target.reset();
-        navigate("/customer"); // go back
-      } else {
-        alert("Error submitting order.");
-      }
-    } catch (err) {
-      console.error("Order creation error:", err);
-    }
+    alert("Item added to cart!");
+    e.target.reset();
+    navigate("/customer/cart");
   };
 
   if (!selectedListing)
@@ -91,7 +123,7 @@ export default function PlaceOrder() {
           <input type="number" name="qty" min="1" defaultValue="1" />
         </label>
 
-        <button type="submit">Submit Order</button>
+        <button type="submit">Add to Cart</button>
       </form>
       <button
         className="bg-green-500 text-white px-6 py-3 rounded-full hover:bg-green-600 transition mt-4"

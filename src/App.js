@@ -10,6 +10,7 @@ import NavBar from "./components/Shared/NavBar"
 import Customer from "./components/Customer/Customer";
 import CustomerSeeListings from "./components/Customer/SeeListings";
 import CustomerPlaceOrder from "./components/Customer/PlaceOrder";
+import ShoppingCart from "./components/Customer/ShopingCart";
 
 // import EmployeeDashboard from "./components/EmployeeDashboard";
 // import OrganizationDashboard from "./components/OrganizationDashboard";
@@ -32,6 +33,7 @@ export default function App() {
           <Route path="/customer" element={<Customer />} />
           <Route path="/customer/org/:orgId" element={<CustomerSeeListings />} />
           <Route path="/customer/listing/:listingId" element={<CustomerPlaceOrder />} />
+          <Route path="/customer/cart" element={<ShoppingCart />} />
           {/* <Route path="/employee" element={<EmployeeDashboard />} />
           <Route path="/organization" element={<OrganizationDashboard />} />
           <Route path="/customer" element={<CustomerPage />} /> */}
