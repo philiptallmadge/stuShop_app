@@ -1,65 +1,165 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
 /* Style the navbar */
 nav {
-  position: fixed; /* stays on top */
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  background-color: #143865; /* Notre Dame navy */
-  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #0c2340 0%, #1a3a5c 100%);
+  padding: 1rem;
   display: flex;
   align-items: center;
-  z-index: 100; /* ensure it’s above content */
+  z-index: 100;
+  border-bottom: 40px solid #C99700;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
-  
-  /* Ensures the rest of the content does not go under the navbar */
-  body {
-    margin: 0;
-    padding-top: 50px; /* Adjust this to match your navbar height */
+
+/* Ensures the rest of the content does not go under the navbar */
+body {
+  margin: 0;
+  padding-top: 20px;
+}
+
+/* Navbar container */
+.nav-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 1400px;
+  margin: auto;
+}
+
+/* "Student Shop" title */
+#title {
+  color: white;
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-right: auto;
+  border-bottom: none !important;
+  padding-bottom: 0 !important;
+  letter-spacing: -0.02em;
+  background: #C99700;
+  background: -webkit-linear-gradient(135deg, #C99700 0%, #FFD700 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transition: all 0.3s ease;
+}
+
+#title:hover {
+  transform: translateY(-1px);
+  filter: drop-shadow(0 2px 8px rgba(0, 132, 61, 0.4));
+}
+
+/* Navigation list */
+.nav-list {
+  display: flex;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+}
+
+/* Menu items */
+.nav-list li {
+  display: inline;
+}
+
+/* Links */
+.nav-list a {
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Hover effect with green accent */
+.nav-list a:hover {
+  background: rgba(0, 132, 61, 0.2);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
+.nav-list a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: #00843d;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.nav-list a:hover::after {
+  width: 80%;
+}
+
+/* Special styling for "Create Account" - make it stand out */
+.nav-list li:last-child a {
+  background: linear-gradient(135deg, #00843d 0%, #00a651 100%);
+  color: #0c2340;
+  font-weight: 700;
+  box-shadow: 0 2px 10px rgba(0, 132, 61, 0.3);
+  margin-left: 0.5rem;
+}
+
+.nav-list li:last-child a:hover {
+  background: linear-gradient(135deg, #00a651 0%, #00c45d 100%);
+  box-shadow: 0 4px 15px rgba(0, 132, 61, 0.5);
+  transform: translateY(-2px);
+}
+
+.nav-list li:last-child a::after {
+  display: none;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  nav {
+    padding: 0.8rem 1rem;
   }
-  
-  /* Navbar container */
-  .nav-container {
-    display: flex;
-    align-items: center;
-    width: 90%;
-    max-width: auto;
-    margin: auto;
-  }
-  
-  /* "Green Hills" title */
+
   #title {
-    color: white;   
-    font-size: 2rem;
-    font-weight: bold;
-    margin-right: auto; /* Push menu items to the right */
-    border-bottom: none !important;
-    padding-bottom: 0 !important;
+    font-size: 1.4rem;
   }
-  
-  /* Navigation list */
+
   .nav-list {
-    display: flex;
-    gap: 1.5rem; /* Space between items */
-    list-style: none;
-    margin: 0;
-    padding: 0;
+    gap: 0.3rem;
   }
-  
-  /* Menu items */
-  .nav-list li {
-    display: inline;
-  }
-  
-  /* Links */
+
   .nav-list a {
-    color: white;
-    text-decoration: none;
-    font-size: 1.2rem;
-    font-weight: bold;
+    font-size: 0.9rem;
+    padding: 0.5rem 0.8rem;
   }
-  
-  /* Hover effect */
-  .nav-list a:hover {
-    text-decoration: underline;
+
+  .nav-list li:last-child a {
+    margin-left: 0.3rem;
   }
-  
+}
+
+@media (max-width: 480px) {
+  .nav-container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  #title {
+    margin-right: 0;
+  }
+
+  .nav-list {
+    width: 100%;
+    justify-content: center;
+  }
+}

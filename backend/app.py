@@ -1,31 +1,4 @@
-#!/usr/bin/env python3
-# from flask import Flask, jsonify
-# from flask_cors import CORS
-# import mysql.connector
-
-# app = Flask(__name__)
-# CORS(app) 
-
-# conn = mysql.connector.connect(
-#     host="localhost",
-#     user="mleal2",
-#     password="Bepagy09_",
-#     database="mleal2"
-# )
-# cursor = conn.cursor(dictionary=True)
-
-# @app.route("/employees")
-# def get_employees():
-#     print("/employees endpoint hit")
-#     cursor.execute("SELECT * FROM employees")
-#     rows = cursor.fetchall()
-#     return jsonify(rows)
-
-# if __name__ == "__main__":
-#     print("Flask app is starting up")
-#     app.run(host="0.0.0.0", port=5000)
-
-from flask import Flask, jsonify, request
+from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 import mysql.connector
 import bcrypt
@@ -241,7 +214,30 @@ def delete_employee(id):
         print("Error:", e)
         return jsonify({"error": str(e)}), 500
 
-@app.route("/organizations", methods = ["GET"])
+# @app.route("/organizations", methods = ["GET"])
+# @jwt_required()
+# def get_organizations():
+#     """Return all organizations."""
+#     conn = get_db_connection()
+#     cursor = conn.cursor(dictionary=True)
+#     print("/organizations endpoint hit")
+#     current_user = get_jwt_identity()  
+#     claims = get_jwt()
+
+#     # if claims.get("role") != 1:
+#     #     return jsonify({"error": "Access denied: insufficient permissions"}), 403
+
+#     try:
+#         cursor.execute("SELECT * FROM organizations")
+#         rows = cursor.fetchall()
+#         print("Organizations data retrieved:", rows)
+#         return jsonify(rows), 200
+
+#     except Exception as e:
+#         print("Database error:", e)
+#         return jsonify({"error": str(e)}), 500
+
+@app.route("/organizations", methods=["GET"])
 @jwt_required()
 def get_organizations():
     """Return all organizations."""
@@ -251,11 +247,17 @@ def get_organizations():
     current_user = get_jwt_identity()  
     claims = get_jwt()
 
-    # if claims.get("role") != 1:
-    #     return jsonify({"error": "Access denied: insufficient permissions"}), 403
-
     try:
-        cursor.execute("SELECT * FROM organizations")
+        # Don't select the image BLOB - just indicate if it exists
+        cursor.execute("""
+            SELECT 
+                id, 
+                level, 
+                name, 
+                email, 
+                phone_number
+            FROM organizations
+        """)
         rows = cursor.fetchall()
         print("Organizations data retrieved:", rows)
         return jsonify(rows), 200
@@ -263,6 +265,9 @@ def get_organizations():
     except Exception as e:
         print("Database error:", e)
         return jsonify({"error": str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
 
 @app.route("/organizations/<int:org_id>", methods=["GET"])
 @jwt_required()
@@ -274,7 +279,17 @@ def get_organization(org_id):
         claims = get_jwt()
         user_level = claims.get("role")
         user_id = get_jwt_identity()
-        cursor.execute("SELECT * FROM organizations WHERE id = %s", (org_id,))
+        # Don't select the image BLOB
+        cursor.execute("""
+            SELECT 
+                id, 
+                level, 
+                name, 
+                email, 
+                phone_number
+            FROM organizations 
+            WHERE id = %s
+        """, (org_id,))
         row = cursor.fetchone()
         if not row:
             return jsonify({"error": "Organization not found"}), 404
@@ -538,6 +553,29 @@ def get_customer_by_id(customer_id):
     except Exception as e:
         print("Error:", e)
         return jsonify({"error": str(e)}), 500
+    
+@app.route("/api/organizations/<int:org_id>/image", methods=["GET"])
+def get_organization_image(org_id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    # org_id = 9
+    try:
+        cursor.execute("""
+            SELECT image FROM organizations WHERE id = %s
+        """, (org_id,))
+        
+        result = cursor.fetchone()
+        
+        if result and result['image']:
+            return result['image'], 200
+        else:
+            return jsonify({"error": "Image not found"}), 404
+            
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
     
 @app.route("/add_order", methods=["POST"])
 def create_order():

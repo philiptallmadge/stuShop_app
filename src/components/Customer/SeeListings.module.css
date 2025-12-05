@@ -1,0 +1,298 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
+/* Color Palette - Notre Dame Theme */
+:root {
+  --nd-navy: #0c2340;
+  --nd-green: #00843d;
+  --nd-gold: #C99700;
+  --nd-light-green: #00a651;
+}
+
+/* Main Container */
+.container {
+  min-height: 100vh;
+  padding: 2rem 1.5rem;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(135deg, #0c2340 0%, #0a1929 50%, #00843d 100%);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Animated background elements */
+.container::before {
+  content: '';
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(0, 132, 61, 0.12) 0%, transparent 70%);
+  top: -150px;
+  right: -150px;
+  border-radius: 50%;
+  animation: float 10s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container::after {
+  content: '';
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(0, 132, 61, 0.08) 0%, transparent 70%);
+  bottom: -100px;
+  left: -100px;
+  border-radius: 50%;
+  animation: float 12s ease-in-out infinite reverse;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) translateX(0px); }
+  50% { transform: translateY(40px) translateX(40px); }
+}
+
+/* Content Wrapper */
+.contentWrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+/* Left Section - Listings */
+.leftSection {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Right Section - Organization Info */
+.rightSection {
+  flex: 1;
+  position: sticky;
+  top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 7rem;
+}
+
+/* Organization Info Card */
+.orgInfoCard {
+  padding: 2rem;
+  border: 8px solid #C99700;
+  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.orgInfoCard h3 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--nd-navy);
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.orgInfoCard p {
+  font-size: 1rem;
+  color: #666;
+  margin: 0.5rem 0;
+}
+
+.orgInfoCard strong {
+  color: var(--nd-green);
+  font-weight: 700;
+}
+
+/* Organization Image */
+.orgImage {
+  width: 100%;
+  height: auto;
+  border-radius: 1.5rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  object-fit: cover;
+  max-height: 400px;
+  border: 8px solid #C99700;
+}
+
+/* Section Header */
+.sectionHeader {
+  font-size: 1.75rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--nd-gold) 0%, #b8860b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  letter-spacing: -0.02em;
+}
+
+/* Listings Container */
+.listingsContainer {
+  padding: 2rem;
+  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  border: 8px solid #C99700;
+  margin-top: 15rem;
+}
+
+/* Listings List */
+.listingsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Listing Item */
+.listingItem {
+  padding: 1.5rem;
+  border-left: 4px solid transparent;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.listingItem:hover {
+  background-color: rgba(0, 132, 61, 0.05);
+  border-left: 4px solid var(--nd-green);
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(0, 132, 61, 0.15);
+}
+
+.listingTitle {
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--nd-navy);
+  margin-bottom: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.listingItem:hover .listingTitle {
+  color: var(--nd-green);
+}
+
+.listingPrice {
+  color: var(--nd-gold);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.listingDescription {
+  font-size: 0.95rem;
+  color: #666;
+  line-height: 1.6;
+  margin-top: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.listingItem:hover .listingDescription {
+  color: var(--nd-navy);
+}
+
+/* Empty State */
+.emptyState {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+/* Back Button */
+.backButton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  background: var(--nd-navy);
+  color: white;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 1rem;
+  box-shadow: 0 4px 15px rgba(0, 132, 61, 0.3);
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  margin-top: 1rem;
+}
+
+.backButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+.backButton:hover::before {
+  left: 100%;
+}
+
+.backButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(0, 132, 61, 0.4);
+}
+
+.backButton:active {
+  transform: translateY(0);
+}
+
+/* Button Container */
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 1.5rem 1rem;
+  }
+
+  .contentWrapper {
+    flex-direction: column;
+  }
+
+  .rightSection {
+    position: static;
+    width: 100%;
+  }
+
+  .orgInfoCard,
+  .listingsContainer {
+    padding: 1.5rem;
+  }
+
+  .orgInfoCard h3 {
+    font-size: 1.5rem;
+  }
+
+  .sectionHeader {
+    font-size: 1.5rem;
+  }
+
+  .listingTitle {
+    font-size: 1.1rem;
+  }
+}

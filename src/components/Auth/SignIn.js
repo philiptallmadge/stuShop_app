@@ -15,25 +15,6 @@ export default function SignIn() {
       body: JSON.stringify({ username, password }),
     });
     result.then(async (res) => {
-      // if (res.ok) {
-      //   const data = await res.json();
-      //   const level = data.level;
-      //   const access_token = data.access_token;
-      //   localStorage.setItem("authToken", access_token);
-      //   if (level === 1) {
-      //     navigate("/employee");
-      //   } else if (level === 2) {
-      //     navigate("/organization");
-      //   } else if level === 3 {
-      //     navigate("/customer");  
-      //   } else {
-      //     alert("Invalid user level.");
-      //   }
-      // }
-      // else {
-      //   console.log(username, password)
-      //   alert("Invalid username or password.");
-      // }
       if (res.ok) {
         const data = await res.json();
         const level = String(data.level); 

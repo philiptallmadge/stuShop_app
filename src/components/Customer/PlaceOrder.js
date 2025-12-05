@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { addOrder } from "../../Services/customerService.js";
 import { useNavigate, useParams } from "react-router-dom";
+import styles from "./PlaceOrder.module.css";
 
 export default function PlaceOrder() {
   const { listingId } = useParams();
   const navigate = useNavigate();
-
+  
   // Retrieve listing from localStorage
   const [selectedListing] = useState(
     JSON.parse(localStorage.getItem("selectedListing"))
@@ -16,52 +17,13 @@ export default function PlaceOrder() {
     catch { return null; }
   }
 
-  // const handleOrderSubmit = async (e) => {
-  //   e.preventDefault();
-  //   const formData = new FormData(e.target);
-
-  //   const token = localStorage.getItem("authToken");
-  //   if (!token) return;
-
-  //   const userId = parseJwt(token)?.sub;
-  //   const size = formData.get("size");
-
-  //   const data = {
-  //     first_name: formData.get("first_name"),
-  //     last_name: formData.get("last_name"),
-  //     grade: formData.get("grade"),
-  //     size: size || "none",
-  //     qty: parseInt(formData.get("qty")) || 1,
-  //     listing_id: selectedListing.id,
-  //     event_name: selectedListing.event_name,
-  //     price: selectedListing.price,
-  //     status: size ? "pending" : "completed",
-  //     owner_id: userId,
-  //   };
-
-  //   try {
-  //     const response = await addOrder(data, token);
-
-  //     if (response.message === "Order created successfully") {
-  //       alert("Order submitted successfully!");
-  //       e.target.reset();
-  //       navigate("/customer"); // go back
-  //     } else {
-  //       alert("Error submitting order.");
-  //     }
-  //   } catch (err) {
-  //     console.error("Order creation error:", err);
-  //   }
-  // };
   const handleOrderSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-
     const token = localStorage.getItem("authToken");
     if (!token) return;
 
     const userId = parseJwt(token)?.sub;
-
     const data = {
       first_name: formData.get("first_name"),
       last_name: formData.get("last_name"),
@@ -80,57 +42,87 @@ export default function PlaceOrder() {
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
     cart.push(data);
     localStorage.setItem("cart", JSON.stringify(cart));
-
+    
     alert("Item added to cart!");
     e.target.reset();
     navigate("/customer/cart");
   };
 
   if (!selectedListing)
-    return <p>Error: No listing selected</p>;
+    return (
+      <div className={styles.container}>
+        <p className={styles.errorMessage}>Error: No listing selected</p>
+      </div>
+    );
 
   return (
-    <div style={{ marginTop: "20px", padding: "10px", border: "1px solid #ccc" }}>
-      <h3>Listing Details</h3>
-      <p><strong>Name:</strong> {selectedListing.event_name}</p>
-      <p><strong>Price:</strong> ${selectedListing.price}</p>
-      <p><strong>Description:</strong> {selectedListing.description}</p>
-      <p><strong>Status:</strong> {selectedListing.state}</p>
+    <div className={styles.container}>
+      <div className={styles.contentWrapper}>
+        {/* Top Right Buttons */}
+        <div className={styles.topButtonContainer}>
+          <button
+            className={styles.backButton}
+            onClick={() => navigate("/customer/org/" + selectedListing.organization_id)}
+          >
+            Listings
+          </button>
+          <button
+            className={styles.cartButton}
+            onClick={() => navigate("/customer/cart")}
+          >
+            My Cart 🛒
+          </button>
+        </div>
 
-      <form onSubmit={handleOrderSubmit} style={{ display: "grid", gap: "10px", marginTop: "10px" }}>
-        <label>
-          First Name:
-          <input type="text" name="first_name" required />
-        </label>
+        {/* Two Column Layout */}
+        <div className={styles.twoColumnLayout}>
+          {/* LEFT - Listing Details Card */}
+          <div className={styles.listingCard}>
+            <h3>Listing Details</h3>
+            <div className={styles.listingDetails}>
+              <p><strong>Name:</strong> {selectedListing.event_name}</p>
+              <p><strong>Price:</strong> ${selectedListing.price}</p>
+              <p><strong>Description:</strong> {selectedListing.description}</p>
+              <p><strong>Status:</strong> {selectedListing.state}</p>
+            </div>
+          </div>
 
-        <label>
-          Last Name:
-          <input type="text" name="last_name" required />
-        </label>
+          {/* RIGHT - Order Form Card */}
+          <div className={styles.formCard}>
+            <h3>Place Your Order</h3>
+            <form onSubmit={handleOrderSubmit} className={styles.orderForm}>
+              <div className={styles.formGroup}>
+                <label>First Name</label>
+                <input type="text" name="first_name" required placeholder="Enter your first name" />
+              </div>
 
-        <label>
-          Grade:
-          <input type="text" name="grade" />
-        </label>
+              <div className={styles.formGroup}>
+                <label>Last Name</label>
+                <input type="text" name="last_name" required placeholder="Enter your last name" />
+              </div>
 
-        <label>
-          Size:
-          <input type="text" name="size" />
-        </label>
+              <div className={styles.formGroup}>
+                <label>Grade</label>
+                <input type="text" name="grade" placeholder="e.g. Freshman, Sophomore" />
+              </div>
 
-        <label>
-          Quantity:
-          <input type="number" name="qty" min="1" defaultValue="1" />
-        </label>
+              <div className={styles.formGroup}>
+                <label>Size</label>
+                <input type="text" name="size" placeholder="e.g. S, M, L, XL" />
+              </div>
 
-        <button type="submit">Add to Cart</button>
-      </form>
-      <button
-        className="bg-green-500 text-white px-6 py-3 rounded-full hover:bg-green-600 transition mt-4"
-        onClick={() => navigate("/customer/org/" + selectedListing.organization_id)}
-      >
-        Go back to organization listings
-      </button>
+              <div className={styles.formGroup}>
+                <label>Quantity</label>
+                <input type="number" name="qty" min="1" defaultValue="1" />
+              </div>
+
+              <button type="submit" className={styles.submitButton}>
+                Add to Cart
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

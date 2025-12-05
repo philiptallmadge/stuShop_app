@@ -1,0 +1,362 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
+/* Color Palette - Notre Dame Theme */
+:root {
+  --nd-navy: #0c2340;
+  --nd-green: #00843d;
+  --nd-gold: #C99700;
+  --nd-light-green: #00a651;
+}
+
+/* Main Container */
+.container {
+  min-height: 100vh;
+  padding: 2rem 1.5rem;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(135deg, #0c2340 0%, #0a1929 50%, #00843d 100%);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Animated background elements */
+.container::before {
+  content: '';
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(0, 132, 61, 0.12) 0%, transparent 70%);
+  top: -150px;
+  right: -150px;
+  border-radius: 50%;
+  animation: float 10s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container::after {
+  content: '';
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(0, 132, 61, 0.08) 0%, transparent 70%);
+  bottom: -100px;
+  left: -100px;
+  border-radius: 50%;
+  animation: float 12s ease-in-out infinite reverse;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) translateX(0px); }
+  50% { transform: translateY(40px) translateX(40px); }
+}
+
+/* Content Wrapper */
+.contentWrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* Two Column Layout */
+.twoColumnLayout {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+
+/* Listing Details Card */
+.listingCard {
+  flex: 1;
+  padding: 2rem;
+  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  border: 2px solid rgba(0, 132, 61, 0.3);
+}
+
+.listingCard h3 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--nd-navy);
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+
+.listingDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.listingDetails p {
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.6;
+}
+
+.listingDetails strong {
+  color: var(--nd-green);
+  font-weight: 700;
+  margin-right: 0.5rem;
+}
+
+/* Order Form Card */
+.formCard {
+  flex: 1;
+  padding: 2rem;
+  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.formCard h3 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--nd-navy);
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+.orderForm {
+  display: grid;
+  gap: 1.25rem;
+}
+
+/* Form Label & Input Container */
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.formGroup label {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--nd-navy);
+  letter-spacing: 0.01em;
+}
+
+.formGroup input {
+  padding: 0.75rem 1rem;
+  border: 2px solid rgba(0, 132, 61, 0.2);
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-family: 'Inter', sans-serif;
+  background: white;
+  transition: all 0.3s ease;
+  color: var(--nd-navy);
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: var(--nd-green);
+  box-shadow: 0 0 0 3px rgba(0, 132, 61, 0.1);
+}
+
+.formGroup input::placeholder {
+  color: #999;
+}
+
+/* Submit Button */
+.submitButton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 2rem;
+  background: linear-gradient(135deg, var(--nd-green) 0%, var(--nd-light-green) 100%);
+  color: white;
+  border-radius: 0.75rem;
+  font-weight: 700;
+  font-size: 1.05rem;
+  box-shadow: 0 4px 15px rgba(0, 132, 61, 0.3);
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  margin-top: 0.5rem;
+  width: 100%;
+}
+
+.submitButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+.submitButton:hover::before {
+  left: 100%;
+}
+
+.submitButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(0, 132, 61, 0.4);
+}
+
+.submitButton:active {
+  transform: translateY(0);
+}
+
+/* Back Button */
+.backButton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, var(--nd-navy) 0%, #0a1929 100%);
+  color: #fff;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 1rem;
+  box-shadow: 0 4px 15px rgba(0, 132, 61, 0.3);
+  border: 2px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.backButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(201, 151, 0, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.backButton:hover::before {
+  left: 100%;
+}
+
+.backButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(12, 35, 64, 0.4);
+  background: linear-gradient(135deg, var(--nd-navy) 0%, var(--nd-green) 100%);
+}
+
+.backButton:active {
+  transform: translateY(0);
+}
+
+/* Button Container */
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+/* Top Button Container - positioned at top right */
+.topButtonContainer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  margin-top: 5rem;
+}
+
+/* Cart Button */
+.cartButton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  background: var(--nd-navy);
+  color: white;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 1rem;
+  box-shadow: 0 4px 15px rgba(0, 132, 61, 0.3);
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.cartButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--nd-navy);
+  transition: left 0.5s;
+    background: linear-gradient(90deg, transparent, rgba(201, 151, 0, 0.2), transparent);
+}
+
+.cartButton:hover::before {
+  left: 100%;
+}
+
+.cartButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(0, 132, 61, 0.4);
+}
+
+.cartButton:active {
+  transform: translateY(0);
+}
+
+/* Error Message */
+.errorMessage {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 968px) {
+  .twoColumnLayout {
+    flex-direction: column;
+  }
+
+  .listingCard,
+  .formCard {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1.5rem 1rem;
+  }
+
+  .listingCard,
+  .formCard {
+    padding: 1.5rem;
+  }
+
+  .listingCard h3,
+  .formCard h3 {
+    font-size: 1.5rem;
+  }
+
+  .submitButton,
+  .backButton {
+    font-size: 0.95rem;
+    padding: 0.75rem 1.25rem;
+  }
+}

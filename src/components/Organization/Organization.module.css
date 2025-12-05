@@ -1,291 +1,470 @@
-/* Color Palette */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
+/* Color Palette - Notre Dame Theme */
 :root {
-  --primary-blue: #007bff;
-  --dark-blue: #0056b3;
-  --light-gray-bg: #f3f4f6; /* bg-gray-100 */
+  --nd-navy: #0c2340;
+  --nd-green: #00843d;
+  --nd-gold: #C99700;
+  --nd-light-green: #00a651;
   --card-bg: white;
-  --border-color: #e5e7eb; /* light border */
-  --text-gray-dark: #4b5563; /* text-gray-600 */
-  --text-gray-light: #6b7280; /* text-gray-500 */
-  --shadow-color: rgba(0, 0, 0, 0.1);
-  --error-red: #ef4444; /* bg-red-500 */
-  --error-red-hover: #dc2626; /* hover:bg-red-600 */
-  --success-green: #22c55e; /* bg-green-500 */
-  --success-green-hover: #16a34a; /* hover:bg-green-600 */
+  --border-color: rgba(12, 35, 64, 0.15);
+  --text-gray-dark: #4b5563;
+  --text-gray-light: #6b7280;
+  --shadow-color: rgba(12, 35, 64, 0.15);
+  --error-red: #ef4444;
+  --error-red-hover: #dc2626;
 }
 
-/* 1. Main Container and Layout */
-/* Equivalent to: min-h-screen flex flex-col items-center justify-start bg-gray-100 p-6 */
+/* Main Container with gradient background */
 .organizationContainer {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: start;
-  background-color: var(--light-gray-bg);
-  padding: 1.5rem; /* p-6 */
+  background: linear-gradient(135deg, #0c2340 0%, #0a1929 50%, #00843d 100%);
+  padding: 2rem 1.5rem;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Animated background elements */
+.organizationContainer::before {
+  content: '';
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(0, 132, 61, 0.12) 0%, transparent 70%);
+  top: -150px;
+  right: -150px;
+  border-radius: 50%;
+  animation: float 10s ease-in-out infinite;
+}
+
+.organizationContainer::after {
+  content: '';
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(0, 132, 61, 0.08) 0%, transparent 70%);
+  bottom: -100px;
+  left: -100px;
+  border-radius: 50%;
+  animation: float 12s ease-in-out infinite reverse;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) translateX(0px); }
+  50% { transform: translateY(40px) translateX(40px); }
 }
 
 /* Welcome Card */
-/* Equivalent to: bg-white p-8 rounded-2xl shadow-md w-96 text-center mb-6 */
 .welcomeCard {
-  background-color: var(--card-bg);
-  padding: 2rem; /* p-8 */
-  border-radius: 1rem; /* rounded-2xl */
-  box-shadow: 0 4px 6px -1px var(--shadow-color); /* shadow-md */
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  padding: 2rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   width: 100%;
-  max-width: 24rem; /* w-96 */
+  max-width: 28rem;
   text-align: center;
-  margin-bottom: 1.5rem; /* mb-6 */
+  margin-bottom: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  z-index: 1;
+  animation: fadeInUp 0.8s ease-out;
+  margin-top: 2rem;
 }
 
-/* Welcome Header */
-/* Equivalent to: text-2xl font-bold mb-4 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Welcome Header with gradient */
 .welcomeHeader {
-  font-size: 1.5rem; /* text-2xl */
-  font-weight: bold;
-  margin-bottom: 1rem; /* mb-4 */
-  color: var(--dark-blue);
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, var(--nd-navy) 0%, var(--nd-green) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.02em;
 }
 
-/* 2. Listings Grid (Two Columns) */
-/* Equivalent to: w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 */
+/* Listings Grid */
 .listingsGrid {
   width: 100%;
-  max-width: 72rem; /* max-w-6xl */
+  max-width: 80rem;
   display: grid;
-  grid-template-columns: 1fr; /* Default to 1 column */
-  gap: 1.5rem; /* gap-6 */
-  margin-bottom: 1.5rem;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 1;
 }
 
 @media (min-width: 768px) {
   .listingsGrid {
-    grid-template-columns: repeat(2, 1fr); /* md:grid-cols-2 */
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-/* Listing Column (Pending/Closed) */
-/* Equivalent to: bg-white p-6 rounded-2xl shadow-md */
+/* Listing Column */
 .listingColumn {
-  background-color: var(--card-bg);
-  padding: 1.5rem; /* p-6 */
-  border-radius: 1rem; /* rounded-2xl */
-  box-shadow: 0 4px 6px -1px var(--shadow-color);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  padding: 2rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.listingColumn:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.25);
 }
 
 /* Column Headers */
 .pendingHeader {
-  font-size: 1.25rem; /* text-xl */
-  font-weight: 600; /* font-semibold */
-  margin-bottom: 1rem; /* mb-4 */
-  color: var(--primary-blue); /* text-blue-600 */
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--nd-green);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pendingHeader::before {
+  content: '';
+  width: 4px;
+  height: 24px;
+  background: var(--nd-green);
+  border-radius: 2px;
 }
 
 .closedHeader {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  color: var(--text-gray-dark); /* text-gray-600 */
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--text-gray-dark);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.closedHeader::before {
+  content: '';
+  width: 4px;
+  height: 24px;
+  background: var(--text-gray-dark);
+  border-radius: 2px;
 }
 
 .noListingText {
-  color: var(--text-gray-light); /* text-gray-500 */
+  color: var(--text-gray-light);
   font-style: italic;
+  text-align: center;
+  padding: 2rem;
 }
 
 /* Listings List */
-/* Equivalent to: space-y-3 */
 .listingsList {
   list-style: none;
   padding: 0;
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem; /* space-y-3 */
+  gap: 1rem;
 }
 
 /* Individual Listing Item */
-/* Equivalent to: p-4 border rounded-xl shadow-sm text-left */
 .listingItem {
-  padding: 1rem; /* p-4 */
-  border: 1px solid var(--border-color);
-  border-radius: 0.75rem; /* rounded-xl */
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+  padding: 1.5rem;
+  border: 2px solid var(--border-color);
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   text-align: left;
   background-color: #fff;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.listingItem:hover {
+  border-color: var(--nd-green);
+  box-shadow: 0 4px 12px rgba(0, 132, 61, 0.15);
+  transform: translateX(4px);
 }
 
 /* Listing Display Elements */
 .listingTitle {
-  font-weight: bold;
-  font-size: 1.125rem; /* text-lg */
-  color: var(--dark-blue);
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--nd-navy);
+  margin-bottom: 0.5rem;
 }
 
 .listingDescription {
-  color: var(--text-gray-dark); /* text-gray-600 */
-  margin-top: 0.25rem;
+  color: var(--text-gray-dark);
+  margin-top: 0.5rem;
+  line-height: 1.5;
 }
 
 .listingDetails {
-  color: var(--dark-blue); /* text-gray-800 */
-  font-weight: 600; /* font-semibold */
-  margin-top: 0.25rem; /* mt-1 */
+  color: var(--nd-navy);
+  font-weight: 600;
+  margin-top: 0.75rem;
+  font-size: 1.1rem;
 }
 
-/* 3. Action Buttons (View Mode) */
-/* Equivalent to: flex gap-2 mt-3 */
+/* Action Buttons */
 .actionButtons {
   display: flex;
-  gap: 0.5rem; /* gap-2 */
-  margin-top: 0.75rem; /* mt-3 */
+  gap: 0.75rem;
+  margin-top: 1rem;
 }
 
 /* Edit Button */
-/* Equivalent to: bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 */
 .editButton {
-  background-color: var(--primary-blue);
+  background: linear-gradient(135deg, var(--nd-green) 0%, var(--nd-light-green) 100%);
   color: white;
-  padding: 0.25rem 0.75rem; /* px-3 py-1 */
-  border-radius: 0.25rem; /* rounded */
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
   border: none;
   cursor: pointer;
-  transition: background-color 0.2s;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 132, 61, 0.3);
 }
+
 .editButton:hover {
-  background-color: var(--dark-blue);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 132, 61, 0.4);
 }
 
 /* Delete Button */
 .deleteButton {
-  padding: 0.25rem 0.75rem;
-  border-radius: 0.25rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
   color: white;
   border: none;
-  transition: background-color 0.2s;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 .deleteButtonEnabled {
   background-color: var(--error-red);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
 }
+
 .deleteButtonEnabled:hover {
   background-color: var(--error-red-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
 }
+
 .deleteButtonDisabled {
-  background-color: var(--text-gray-dark); /* bg-gray-400 */
+  background-color: var(--text-gray-dark);
   cursor: not-allowed;
+  opacity: 0.5;
 }
 
-/* 4. Edit Form Styles (Within Listing Item) */
-
+/* Edit Form Styles */
 .editFormContainer {
-    /* Replaces flex-1, ensures the form takes full space */
-    width: 100%;
+  width: 100%;
 }
 
 /* Edit Input Field */
-/* Equivalent to: border rounded p-1 mb-1 w-full */
 .editInput {
-  border: 1px solid var(--border-color);
-  border-radius: 0.25rem;
-  padding: 0.25rem; /* p-1 */
-  margin-bottom: 0.25rem; /* mb-1 */
+  border: 2px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
   width: 100%;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.editInput:focus {
+  outline: none;
+  border-color: var(--nd-green);
+  box-shadow: 0 0 0 3px rgba(0, 132, 61, 0.1);
 }
 
 /* Edit Text Area */
-/* Equivalent to: border rounded p-1 w-full */
 .editTextArea {
-  border: 1px solid var(--border-color);
-  border-radius: 0.25rem;
-  padding: 0.25rem;
+  border: 2px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
   width: 100%;
   resize: vertical;
-  min-height: 4rem;
+  min-height: 5rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.editTextArea:focus {
+  outline: none;
+  border-color: var(--nd-green);
+  box-shadow: 0 0 0 3px rgba(0, 132, 61, 0.1);
 }
 
 /* Edit/Cancel Buttons Container */
-/* Equivalent to: flex gap-2 mt-2 */
 .editButtonContainer {
   display: flex;
-  gap: 0.5rem; /* gap-2 */
-  margin-top: 0.5rem; /* mt-2 */
+  gap: 0.75rem;
+  margin-top: 1rem;
 }
 
 /* Save Button */
-/* Equivalent to: bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 */
 .saveButton {
-  background-color: var(--success-green);
+  background: linear-gradient(135deg, var(--nd-green) 0%, var(--nd-light-green) 100%);
   color: white;
-  padding: 0.25rem 0.75rem;
-  border-radius: 0.25rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
   border: none;
   cursor: pointer;
-  transition: background-color 0.2s;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 132, 61, 0.3);
 }
+
 .saveButton:hover {
-  background-color: var(--success-green-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 132, 61, 0.4);
 }
 
 /* Cancel Button */
-/* Equivalent to: bg-gray-400 text-white px-3 py-1 rounded hover:bg-gray-500 */
 .cancelButton {
   background-color: var(--text-gray-dark);
   color: white;
-  padding: 0.25rem 0.75rem;
-  border-radius: 0.25rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
   border: none;
   cursor: pointer;
-  transition: background-color 0.2s;
+  font-weight: 600;
+  transition: all 0.3s ease;
 }
+
 .cancelButton:hover {
-  background-color: #6b7280; /* Slightly darker gray hover */
+  background-color: #6b7280;
+  transform: translateY(-2px);
 }
 
-/* 5. Footer Buttons */
-/* Equivalent to: mt-6 flex gap-4 */
+/* Footer Buttons */
 .footerButtons {
-  margin-top: 1.5rem; /* mt-6 */
+  margin-top: 2rem;
   display: flex;
-  gap: 1rem; /* gap-4 */
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
 }
 
-/* Standard Button Styles (Refresh, Create, Logout) */
+/* Standard Button Styles */
 .refreshButton,
 .createListingButton,
 .logoutButton {
-  padding: 0.75rem 1.5rem; /* px-6 py-3 */
-  border-radius: 9999px; /* rounded-full */
+  padding: 0.875rem 2rem;
+  border-radius: 0.75rem;
   color: white;
   border: none;
   cursor: pointer;
-  transition: background-color 0.2s;
-  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 700;
+  font-size: 1rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.refreshButton::before,
+.createListingButton::before,
+.logoutButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+.refreshButton:hover::before,
+.createListingButton:hover::before,
+.logoutButton:hover::before {
+  left: 100%;
 }
 
 /* Refresh Button */
-/* Equivalent to: bg-gray-400 text-white px-6 py-3 rounded-full hover:bg-gray-500 transition */
 .refreshButton {
-  background-color: var(--text-gray-dark);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
 }
+
 .refreshButton:hover {
-  background-color: #6b7280;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
 }
 
 /* Create Listing Button */
-/* Equivalent to: bg-blue-500 text-white px-6 py-3 rounded-full hover:bg-blue-600 transition */
 .createListingButton {
-  background-color: var(--primary-blue);
+  background: linear-gradient(135deg, var(--nd-green) 0%, var(--nd-light-green) 100%);
 }
+
 .createListingButton:hover {
-  background-color: var(--dark-blue);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(0, 132, 61, 0.4);
 }
 
 /* Log out Button */
-/* Equivalent to: bg-green-500 text-white px-6 py-3 rounded-full hover:bg-green-600 transition */
 .logoutButton {
-  background-color: var(--success-green);
+  background: linear-gradient(135deg, var(--nd-navy) 0%, #1a3a5c 100%);
 }
+
 .logoutButton:hover {
-  background-color: var(--success-green-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(12, 35, 64, 0.4);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .organizationContainer {
+    padding: 1.5rem 1rem;
+  }
+
+  .welcomeCard {
+    padding: 2rem 1.5rem;
+  }
+
+  .listingColumn {
+    padding: 1.5rem;
+  }
+
+  .footerButtons {
+    flex-direction: column;
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .refreshButton,
+  .createListingButton,
+  .logoutButton {
+    width: 100%;
+  }
 }
