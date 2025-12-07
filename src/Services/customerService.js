@@ -7,3 +7,7 @@ export function getCustomerById(id,token) {
 export function addOrder(orderData, token) {
   return apiRequest(`/add_order`, "POST", orderData, token);
 }
+
+export function getAllListings(token) {
+  return apiRequest(`/customer-all-listings`, "GET", null, token);
+}

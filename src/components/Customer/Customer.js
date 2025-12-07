@@ -62,6 +62,12 @@ export default function Customer() {
         >
           Log out
         </button>
+        <button
+          className={styles.logoutButton}
+          onClick={() => navigate("/customer/all-listings")}
+        >
+          See All Listings
+        </button>
       </div>
 
       {organizations.length > 0 ? (

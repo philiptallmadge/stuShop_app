@@ -11,10 +11,7 @@ import Customer from "./components/Customer/Customer";
 import CustomerSeeListings from "./components/Customer/SeeListings";
 import CustomerPlaceOrder from "./components/Customer/PlaceOrder";
 import ShoppingCart from "./components/Customer/ShopingCart";
-
-// import EmployeeDashboard from "./components/EmployeeDashboard";
-// import OrganizationDashboard from "./components/OrganizationDashboard";
-// import CustomerPage from "./components/CustomerPage";
+import CustomerAllListings from "./components/Customer/SeeAllListings";
 
 export default function App() {
   return (
@@ -34,6 +31,7 @@ export default function App() {
           <Route path="/customer/org/:orgId" element={<CustomerSeeListings />} />
           <Route path="/customer/listing/:listingId" element={<CustomerPlaceOrder />} />
           <Route path="/customer/cart" element={<ShoppingCart />} />
+          <Route path="/customer/all-listings" element={<CustomerAllListings />} />
           {/* <Route path="/employee" element={<EmployeeDashboard />} />
           <Route path="/organization" element={<OrganizationDashboard />} />
           <Route path="/customer" element={<CustomerPage />} /> */}

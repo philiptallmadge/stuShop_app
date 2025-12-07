@@ -576,7 +576,26 @@ def get_organization_image(org_id):
     finally:
         cursor.close()
         conn.close()
-    
+
+
+# export function getAllListings(token) {
+#   return apiRequest(`/listings`, "GET", null, token);
+# }
+@app.route("/customer-all-listings", methods=["GET"])
+def get_all_listings():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    print("Get all listings endpoint hit")
+    try:
+        cursor.execute("SELECT * FROM listings WHERE state = 'pending'")
+        rows = cursor.fetchall()
+        print("Listings data retrieved:", rows)
+        return jsonify(rows), 200
+
+    except Exception as e:
+        print("Error:", e)
+        return jsonify({"error": str(e)}), 500
+
 @app.route("/add_order", methods=["POST"])
 def create_order():
     conn = get_db_connection()
