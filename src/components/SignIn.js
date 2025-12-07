@@ -19,6 +19,7 @@ export default function SignIn() {
         const level = data.level;
         const access_token = data.access_token;
         localStorage.setItem("authToken", access_token);
+        localStorage.setItem("username", name);
         if (level === 1) {
           navigate("/employee");
         } else if (level === 2) {

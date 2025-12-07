@@ -149,7 +149,8 @@ def sign_in_authentication():
             return jsonify({
                 "message": "Authentication successful",
                 "access_token": access_token,
-                "level": result["level"]
+                "level": result["level"],
+                "username": username
             }), 200
         else:
             # Invalid username or password
