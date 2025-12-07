@@ -3,7 +3,7 @@ import { getCustomerById } from "../../Services/customerService.js";
 import { getOrganizations, getListingsByOrganizationId } from "../../Services/organizationService.js";
 import { useNavigate } from "react-router-dom";
 import styles from "./Customer.module.css"; 
-import image from "./image2.webp";
+// import image from "./image2.webp";
 
 export default function Customer() {
   const navigate = useNavigate();

@@ -83,7 +83,7 @@ import React, { useState, useEffect } from "react";
 import { getOrganizations, getListingsByOrganizationId } from "../../Services/organizationService.js";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "./SeeListings.module.css";
-import image from "./image2.webp";
+// import image from "./image2.webp";
 
 export default function SeeListings() {
   const { orgId } = useParams();
