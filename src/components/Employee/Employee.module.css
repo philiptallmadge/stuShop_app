@@ -1,195 +1,307 @@
-/* Color Palette */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
+/* Color Palette - Notre Dame Theme */
 :root {
-  --primary-blue: #007bff;
-  --dark-blue: #0056b3;
-  --light-blue: #e9f5ff; /* Light blue for item hover/active background */
-  --light-gray-bg: #f3f4f6;
-  --card-bg: white;
-  --border-color: #d1d5db;
-  --shadow-color: rgba(0, 0, 0, 0.1);
-  --success-green: #22c55e;
+  --nd-navy: #0c2340; /* Dark Navy/Black */
+  --nd-green: #00843d;
+  --nd-gold: #C99700;
+  --nd-light-green: #00a651;
 }
 
-/* 1. Main Container and Header */
-.employeeContainer {
+/* Page and Layout */
+.container {
   min-height: 100vh;
-  background-color: var(--light-gray-bg);
-  padding: 30px 20px;
-  font-family: Arial, sans-serif;
+  padding: 2rem 1.5rem;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, var(--nd-navy) 0%, #0a1929 50%, var(--nd-green) 100%);
+  position: relative;
+  overflow-x: hidden;
+  color: white; /* Default text color on dark background */
 }
 
+/* Animated background elements (omitted for brevity) */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) translateX(0px); }
+  50% { transform: translateY(40px) translateX(40px); }
+}
+
+/* --- Employee Welcome/Header Area --- */
 .welcomeCard {
-  background-color: var(--card-bg);
-  padding: 2rem;
-  border-radius: 1rem;
-  box-shadow: 0 4px 6px -1px var(--shadow-color);
-  max-width: 900px;
-  margin: 0 auto 30px;
-  text-align: center;
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 10; 
+    padding: 1.5rem 0;
+    background: var(--nd-navy);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    text-align: center;
 }
-
 .welcomeHeader {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: var(--dark-blue);
-  margin-bottom: 0.5rem;
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--nd-gold);
+    margin: 0;
 }
-
 .employeeEmail {
     font-size: 1rem;
-    color: #666;
-    margin-bottom: 1.5rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0.5rem 0 1rem;
+}
+.buttonContainer {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
 }
 
-/* 2. Layout for Sections (Organizations, Details) */
-.contentLayout {
+
+/* --- Main Content Layout --- */
+.contentWrapper {
+  max-width: 1400px;
+  margin: 2rem auto; 
+  position: relative;
+  z-index: 1;
   display: flex;
-  gap: 30px;
-  max-width: 1200px;
-  margin: 0 auto;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+.leftSection {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.rightSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
-.sectionCard {
-  flex: 1; 
-  background-color: var(--card-bg);
-  padding: 1.5rem;
-  border-radius: 0.75rem;
-  box-shadow: 0 2px 4px var(--shadow-color);
-  border-left: 5px solid var(--primary-blue);
+
+/* Shared Card Styles */
+.listingsContainer, .orgInfoCard {
+  padding: 1.5rem; 
+  border: 8px solid var(--nd-gold);
+  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    /* Set default text color for all content inside the card to dark Navy */
+    color: var(--nd-navy); 
 }
 
-.sectionCardLarge {
-  flex: 2; 
-  background-color: var(--card-bg);
-  padding: 1.5rem;
-  border-radius: 0.75rem;
-  box-shadow: 0 2px 4px var(--shadow-color);
-  border-left: 5px solid var(--dark-blue);
+/* Specific Org Card Styles */
+.orgInfoCard h3 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--nd-navy); 
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
 }
-
-/* Headers */
-h2 {
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: var(--dark-blue);
-    border-bottom: 1px solid var(--light-gray-bg);
-    padding-bottom: 5px;
-    margin-bottom: 15px;
+.orgInfoCard p {
+  font-size: 1rem;
+  color: var(--nd-navy); 
+  margin: 0.5rem 0;
 }
-h3 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--primary-blue);
-    margin-top: 15px;
-    margin-bottom: 10px;
+.orgInfoCard strong {
+  color: var(--nd-green); /* Keep strong tags green for highlights */
+  font-weight: 700;
 }
 .orgDescription {
     margin-top: 10px;
-    padding-left: 5px;
-    border-left: 2px solid var(--primary-blue);
 }
 
-/* Buttons */
-.primaryButton, .secondaryButton, .logoutButton {
-    padding: 10px 15px;
-    border-radius: 0.5rem;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    font-weight: 500;
-    margin-right: 10px;
-    margin-bottom: 15px;
-}
-.primaryButton {
-    background-color: var(--primary-blue);
-    color: white;
-}
-.primaryButton:hover {
-    background-color: var(--dark-blue);
-}
-.secondaryButton {
-    background-color: #6c757d; 
-    color: white;
-}
-.secondaryButton:hover {
-    background-color: #5a6268;
-}
-.logoutButton {
-    background-color: var(--success-green);
-    color: white;
-    display: block;
-    margin: 15px auto 15px;
-}
 
-/* Input/Select Fields (kept for consistency, though select is removed) */
-.inputField {
-    padding: 8px;
-    border: 1px solid var(--border-color);
-    border-radius: 0.25rem;
-    margin-right: 10px;
-}
-.selectorGroup {
+/* Section Header and Refresh Button Group */
+.sectionHeaderGroup {
     display: flex;
-    align-items: center;
-    margin-top: 15px;
+    justify-content: space-between; /* Pushes header and button to opposite ends */
+    align-items: center; /* Vertically centers them */
+    margin-bottom: 1rem; /* Maintains spacing below the group */
 }
 
-/* Lists and Items */
+.sectionHeader {
+  font-size: 1.75rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--nd-gold) 0%, #b8860b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-align: left; 
+  letter-spacing: -0.02em;
+  margin: 0;
+  padding: 0;
+}
+
+.headerActions {
+    margin-bottom: 1rem; 
+}
+
+
+/* Lists and Items (Interactivity) */
 .orgList, .listingsList, .ordersList {
     list-style: none;
     padding: 0;
     margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+/* Scrollable container wrapper for lists (Organizations, Listings, and Orders) */
+.scrollableList {
+    max-height: 400px; 
+    overflow-y: auto; 
+    padding-right: 0.5rem; 
+    margin-bottom: 0.5rem;
 }
 
 /* Base style for clickable items (Org and Listing) */
-.orgListItem, .listingItem {
-    padding: 10px;
-    margin-bottom: 5px;
-    background-color: var(--card-bg);
-    border-radius: 0.25rem;
-    font-size: 0.95rem;
-    border-left: 4px solid transparent; /* Placeholder for border change */
-    cursor: pointer;
-    transition: background-color 0.2s, border-left 0.2s;
+.listingItem {
+  padding: 0.75rem; 
+  border-left: 4px solid transparent;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/*Ensure all text elements are Navy by default (inherited from card, but explicitly set here for safety) */
+.listingItem,
+.listingItem .listingTitle,
+.listingItem .listingPrice,
+.listingItem strong {
+    color: var(--nd-navy); 
 }
 
 /* HOVER EFFECT */
-.orgListItem:hover, .listingItem:hover {
-    background-color: var(--light-blue);
-    border-left: 4px solid var(--primary-blue);
+.listingItem:hover {
+  background-color: rgba(0, 132, 61, 0.05);
+  border-left: 4px solid var(--nd-green);
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(0, 132, 61, 0.15);
 }
 
-/* ACTIVE STATE */
+/* Ensures all text within active item is dark Navy (Black) */
 .activeItem {
-    background-color: var(--light-blue);
-    border-left: 4px solid var(--dark-blue) !important;
-    font-weight: bold;
+    background-color: rgba(0, 132, 61, 0.1) !important;
+    border-left: 4px solid var(--nd-gold) !important;
+    transform: none !important;
+    box-shadow: 0 0 0 2px var(--nd-gold);
+    color: var(--nd-navy) !important; 
+}
+.activeItem .listingTitle,
+.activeItem .listingPrice,
+.activeItem strong {
+    color: var(--nd-navy) !important; 
 }
 
-/* Orders List Specifics */
+/* Item Titles/Details */
+.listingTitle {
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+.listingPrice {
+  color: var(--nd-gold); 
+  font-weight: 700;
+  font-size: 1rem;
+}
 .orderItem {
-    padding: 8px;
-    margin-bottom: 5px;
-    background-color: var(--light-blue);
-    border-radius: 0.25rem;
-    font-size: 0.95rem;
-    border-left: 4px solid var(--success-green); 
-}
-
-/* Nested Sections */
-.nestedSection {
-    margin-top: 20px;
-    padding: 10px;
-    border: 1px dashed var(--border-color);
+    padding: 1rem;
+    border-left: 4px solid var(--nd-green);
     border-radius: 0.5rem;
+    background-color: rgba(0, 132, 61, 0.05);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+.orderItem p {
+    margin: 0.25rem 0;
+    color: var(--nd-navy); 
+}
+.orderPaid strong {
+    color: var(--nd-navy);
 }
 
-/* Responsive adjustment */
-@media (max-width: 768px) {
-  .contentLayout {
+/* Buttons */
+.secondaryButtonSmall {
+    /* Used for 'Refresh Listings' */
+    margin-left: 0; 
+    padding: 0.3rem 0.75rem;
+    background: var(--nd-gold);
+    color: var(--nd-navy);
+    border-radius: 0.5rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.secondaryButtonSmall:hover {
+    background: var(--nd-green);
+}
+.logoutButton {
+    /* Matches backButton style for uniformity */
+    padding: 0.75rem 1.5rem;
+    background: var(--nd-green);
+    color: white;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.logoutButton:hover {
+    background: var(--nd-gold);
+}
+
+/* Utility / Empty State */
+.emptyState {
+    text-align: center;
+    padding: 1rem 0;
+    color: var(--nd-navy); 
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+/* Search Bar Styling */
+.searchContainer {
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(12, 35, 64, 0.1); /* Light navy separator */
+}
+
+.searchInput {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--nd-gold);
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    color: var(--nd-navy);
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+.searchInput::placeholder {
+    color: #999;
+}
+
+.searchInput:focus {
+    outline: none;
+    border-color: var(--nd-green);
+    box-shadow: 0 0 0 1px var(--nd-green);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .contentWrapper {
     flex-direction: column;
   }
-  .sectionCard, .sectionCardLarge {
-      min-width: 90%;
+  .welcomeCard {
+      position: static;
+  }
+  .rightSection {
+    position: static;
+    width: 100%;
   }
 }
