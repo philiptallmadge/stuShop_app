@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -110,6 +109,11 @@ export default function Organization() {
     }
   };
 
+  const handleSeeOrders = (listingId) => {
+    // Navigate to orders page and pass the listing ID
+    navigate(`/organization/orders/${listingId}`);
+  };
+
   const renderListing = (listing, canEdit = true) => (
   <li
     key={listing.id}
@@ -118,7 +122,6 @@ export default function Organization() {
     {editingListing === listing.id && canEdit ? (
       
       <div className={styles.editFormContainer}>
-        {/* Replaced: border rounded p-1 mb-1 w-full */}
         <input
           className={styles.editInput}
           name="event_name"
@@ -144,23 +147,19 @@ export default function Organization() {
           value={editForm.date}
           onChange={handleEditChange}
         />
-        {/* Replaced: border rounded p-1 w-full */}
         <textarea
           className={styles.editTextArea}
           name="description"
           value={editForm.description}
           onChange={handleEditChange}
         />
-        {/* Replaced: flex gap-2 mt-2 */}
         <div className={styles.editButtonContainer}>
-          {/* Replaced: bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 */}
           <button
             className={styles.saveButton}
             onClick={handleUpdateListing}
           >
             Save
           </button>
-          {/* Replaced: bg-gray-400 text-white px-3 py-1 rounded hover:bg-gray-500 */}
           <button
             className={styles.cancelButton}
             onClick={() => setEditingListing(null)}
@@ -172,11 +171,8 @@ export default function Organization() {
     ) : (
       <>
         <div>
-          {/* Replaced: font-bold text-lg */}
           <h3 className={styles.listingTitle}>{listing.event_name}</h3>
-          {/* Replaced: text-gray-600 */}
           <p className={styles.listingDescription}>{listing.description}</p>
-          {/* Replaced: text-gray-800 font-semibold mt-1 */}
           <p className={styles.listingDetails}>
             Price: ${listing.price} | Quantity: {listing.qty}
           </p>
@@ -184,14 +180,18 @@ export default function Organization() {
 
         {canEdit && (
           <div className={styles.actionButtons}> 
-            {/* Replaced: bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 */}
+            <button
+              className={styles.seeOrdersButton}
+              onClick={() => handleSeeOrders(listing.id)}
+            >
+              See Orders
+            </button>
             <button
               className={styles.editButton}
               onClick={() => handleEditClick(listing)}
             >
               Edit
             </button>
-            {/* The delete button needs dynamic classes */}
             <button
               className={`${styles.deleteButton} ${
                 isDeleting ? styles.deleteButtonDisabled : styles.deleteButtonEnabled
@@ -215,39 +215,29 @@ export default function Organization() {
   const closedListings = listings.filter(listing => listing.state === "closed");
 
   return (
-    // FIX: Removed comment before this div.
     <div className={styles.organizationContainer}>
-      {/* Replaced: bg-white p-8 rounded-2xl shadow-md w-96 text-center mb-6 */}
       <div className={styles.welcomeCard}>
-        {/* Replaced: text-2xl font-bold mb-4 */}
         <h1 className={styles.welcomeHeader}>
           Welcome, {organization.name}!
         </h1>
       </div>
 
-      {/* Replaced: w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 */}
       <div className={styles.listingsGrid}>
-        {/* Pending Listings Column - Replaced: bg-white p-6 rounded-2xl shadow-md */}
         <div className={styles.listingColumn}>
-          {/* Replaced: text-xl font-semibold mb-4 text-blue-600 */}
           <h2 className={styles.pendingHeader}>
             Pending Listings ({pendingListings.length})
           </h2>
 
           {pendingListings.length === 0 ? (
-            // FIX: Removed comment before this element
             <p className={styles.noListingText}>No pending listings.</p>
           ) : (
-            // FIX: Removed comment before this element
             <ul className={styles.listingsList}>
               {pendingListings.map((listing) => renderListing(listing, true))}
             </ul>
           )}
         </div>
 
-        {/* Closed Listings Column - Replaced: bg-white p-6 rounded-2xl shadow-md */}
         <div className={styles.listingColumn}>
-          {/* Replaced: text-xl font-semibold mb-4 text-gray-600 */}
           <h2 className={styles.closedHeader}>
             Closed Listings ({closedListings.length})
           </h2>
@@ -262,9 +252,7 @@ export default function Organization() {
         </div>
       </div>
 
-      {/* Replaced: mt-6 flex gap-4 */}
       <div className={styles.footerButtons}>
-        {/* Refresh Button - Replaced: bg-gray-400 text-white px-6 py-3 rounded-full hover:bg-gray-500 transition */}
         <button
           className={styles.refreshButton}
           onClick={() => window.location.reload()}
@@ -272,7 +260,6 @@ export default function Organization() {
           Refresh Listings
         </button>
 
-        {/* Create Listing Button - Replaced: bg-blue-500 text-white px-6 py-3 rounded-full hover:bg-blue-600 transition */}
         <button
           className={styles.createListingButton}
           onClick={() => navigate("/organization/add-listing")}
@@ -280,7 +267,6 @@ export default function Organization() {
           Create New Listing
         </button>
 
-        {/* Log out Button - Replaced: bg-green-500 text-white px-6 py-3 rounded-full hover:bg-green-600 transition */}
         <button
           className={styles.logoutButton}
           onClick={() => navigate("/")}

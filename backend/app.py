@@ -97,6 +97,22 @@ def create_account():
         conn.rollback()
         return jsonify({"error": str(e)}), 500
 
+# export function getAllCompletedOrders(listingId,token) {
+#   return apiRequest(`/organizations/listings/${listingId}/completed-orders`, "GET", null, token);
+# }
+
+@app.route("/organizations/listings/<int:listing_id>/completed-orders", methods=["GET", "OPTIONS"])
+@jwt_required()
+def get_completed_orders(listing_id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute("SELECT * FROM orders WHERE listing_id = %s AND status = 'completed'", (listing_id,))
+        rows = cursor.fetchall()
+        return jsonify(rows), 200
+    except Exception as e:
+        print("Error:", e)
+        return jsonify({"error": str(e)}), 500
 
 @app.route("/change-password", methods=["POST"])
 def change_password():

@@ -58,3 +58,7 @@ export function salesByMonth(start, end, token) {
   const queryString = `?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;
   return apiRequest(`/sales/by-month${queryString}`, "GET", null, token);
 }
+
+export function getAllCompletedOrders(listingId, token) {
+  return apiRequest(`/organizations/listings/${listingId}/completed-orders`, "GET", null, token);
+}
