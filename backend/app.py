@@ -1,32 +1,26 @@
+
 from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 import mysql.connector
 import bcrypt
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt, JWTManager
 from flask_jwt_extended import create_access_token
-
+from algoliasearch.search.client import SearchClient  # Version 4.x import
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
-# CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
-# CORS(app)
 
-app.config["JWT_SECRET_KEY"] = "lealdiaztallmadge"  #use a secure random string in production
+app.config["JWT_SECRET_KEY"] = "lealdiaztallmadge"
 app.config["JWT_TOKEN_LOCATION"] = ["headers"]
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = 3600 #1 hr exp
-
-
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = 3600
 jwt = JWTManager(app)
-# conn = mysql.connector.connect(
-#     host="localhost",
-#     user="mleal2",
-#     password="Bepagy09_",
-#     database="mleal2"
-# )
-# cursor = conn.cursor(dictionary=True)
-# cursor.execute("SELECT * FROM employees")
-# rows = cursor.fetchall()
-# print("Initial employees data:", rows)
+
+# ALGOLIA CONFIG
+ALGOLIA_APP_ID = "3FWY1AXMND"
+ALGOLIA_ADMIN_API_KEY = "c26f9600826e02d2ee418ddbe395be69"
+
+# Version 4.x way to create client
+client = SearchClient(ALGOLIA_APP_ID, ALGOLIA_ADMIN_API_KEY)
 
 def get_db_connection():
     return mysql.connector.connect(
@@ -36,6 +30,74 @@ def get_db_connection():
         database="mleal2"
     )
 
+@app.route("/customer-all-listings", methods=["GET"])
+def get_all_listings():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    print("Get all listings endpoint hit")
+    try:
+        cursor.execute("SELECT * FROM listings WHERE state = 'pending'")
+        rows = cursor.fetchall()
+        print("Listings data retrieved:", rows)
+        return jsonify(rows), 200
+    except Exception as e:
+        print("Error:", e)
+        return jsonify({"error": str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route("/sync-algolia", methods=["POST"])
+def sync_algolia():
+    """One-time sync to push all your listings to Algolia"""
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute("SELECT * FROM listings WHERE state = 'pending'")
+        rows = cursor.fetchall()
+        
+        # Format data for Algolia
+        algolia_objects = []
+        for listing in rows:
+            algolia_objects.append({
+                'objectID': str(listing['id']),
+                'id': listing['id'],
+                'event_name': listing['event_name'],
+                'description': listing['description'],
+                'price': listing['price'],
+                'state': listing['state'],
+            })
+        
+        # Send to Algolia - Version 4.x way
+        if algolia_objects:
+            client.save_objects(
+                index_name='listings',
+                objects=algolia_objects
+            )
+        
+        return jsonify({"message": f"Synced {len(algolia_objects)} listings to Algolia"}), 200
+    except Exception as e:
+        print("Error syncing to Algolia:", e)
+        return jsonify({"error": str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+# @app.route("/customer-all-listings", methods=["GET"])
+# def get_all_listings():
+#     conn = get_db_connection()
+#     cursor = conn.cursor(dictionary=True)
+#     print("Get all listings endpoint hit")
+#     try:
+#         cursor.execute("SELECT * FROM listings WHERE state = 'pending'")
+#         rows = cursor.fetchall()
+#         print("Listings data retrieved:", rows)
+#         return jsonify(rows), 200
+
+#     except Exception as e:
+#         print("Error:", e)
+#         return jsonify({"error": str(e)}), 500
+    
 @app.route("/create-account", methods=["POST"])
 def create_account():
     conn = get_db_connection()
@@ -581,20 +643,20 @@ def get_organization_image(org_id):
 # export function getAllListings(token) {
 #   return apiRequest(`/listings`, "GET", null, token);
 # }
-@app.route("/customer-all-listings", methods=["GET"])
-def get_all_listings():
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    print("Get all listings endpoint hit")
-    try:
-        cursor.execute("SELECT * FROM listings WHERE state = 'pending'")
-        rows = cursor.fetchall()
-        print("Listings data retrieved:", rows)
-        return jsonify(rows), 200
+# @app.route("/customer-all-listings", methods=["GET"])
+# def get_all_listings():
+#     conn = get_db_connection()
+#     cursor = conn.cursor(dictionary=True)
+#     print("Get all listings endpoint hit")
+#     try:
+#         cursor.execute("SELECT * FROM listings WHERE state = 'pending'")
+#         rows = cursor.fetchall()
+#         print("Listings data retrieved:", rows)
+#         return jsonify(rows), 200
 
-    except Exception as e:
-        print("Error:", e)
-        return jsonify({"error": str(e)}), 500
+#     except Exception as e:
+#         print("Error:", e)
+#         return jsonify({"error": str(e)}), 500
 
 @app.route("/add_order", methods=["POST"])
 def create_order():
