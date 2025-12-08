@@ -50,3 +50,7 @@ export function updateListing(listingId, updates, token) {
 export function deleteListing(listingId, token) {
   return apiRequest(`/organizations/listings/${listingId}`, "DELETE", null, token);
 }
+
+export function getAllCompletedOrders(listingId, token) {
+  return apiRequest(`/organizations/listings/${listingId}/completed-orders`, "GET", null, token);
+}

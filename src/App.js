@@ -12,6 +12,7 @@ import CustomerSeeListings from "./components/Customer/SeeListings";
 import CustomerPlaceOrder from "./components/Customer/PlaceOrder";
 import ShoppingCart from "./components/Customer/ShopingCart";
 import CustomerAllListings from "./components/Customer/SeeAllListings";
+import OrganizationSeeOrders from "./components/Organization/OrganizationSeeOrders";
 
 export default function App() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
           <Route path="/customer/listing/:listingId" element={<CustomerPlaceOrder />} />
           <Route path="/customer/cart" element={<ShoppingCart />} />
           <Route path="/customer/all-listings" element={<CustomerAllListings />} />
+          <Route path="/organization/orders/:listingId" element={<OrganizationSeeOrders />} />
           {/* <Route path="/employee" element={<EmployeeDashboard />} />
           <Route path="/organization" element={<OrganizationDashboard />} />
           <Route path="/customer" element={<CustomerPage />} /> */}
