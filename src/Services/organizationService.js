@@ -50,3 +50,11 @@ export function updateListing(listingId, updates, token) {
 export function deleteListing(listingId, token) {
   return apiRequest(`/organizations/listings/${listingId}`, "DELETE", null, token);
 }
+export function salesByOrganization(start, end, token) {
+  const queryString = `?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;
+  return apiRequest(`/sales/by-org${queryString}`, "GET", null, token);
+}
+export function salesByMonth(start, end, token) {
+  const queryString = `?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;
+  return apiRequest(`/sales/by-month${queryString}`, "GET", null, token);
+}

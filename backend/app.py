@@ -15,7 +15,10 @@ app.config["JWT_SECRET_KEY"] = "lealdiaztallmadge"  #use a secure random string 
 app.config["JWT_TOKEN_LOCATION"] = ["headers"]
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = 3600 #1 hr exp
 
-
+@app.before_request
+def handle_options():
+    if request.method == "OPTIONS":
+        return jsonify({}), 200
 jwt = JWTManager(app)
 # conn = mysql.connector.connect(
 #     host="localhost",
@@ -369,7 +372,73 @@ def create_organization():
     except Exception as e:
         print("Error:", e)
         return jsonify({"error": str(e)}), 500
+@app.route("/sales/by-month", methods=["GET"])
+@jwt_required()
+def sales_by_month():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    claims = get_jwt()
 
+    if claims.get("role", 0) != 1:
+        return jsonify({"error": "Unauthorized"}), 403
+
+    start = request.args.get("start")
+    end = request.args.get("end")
+
+    try:
+        query = """
+    SELECT 
+        DATE_FORMAT(o.date_purchased, '%Y-%m') AS month,
+        SUM(l.price * o.qty) AS totalSales
+    FROM orders o
+    JOIN listings l ON o.listing_id = l.id
+    WHERE o.date_purchased >= %s
+      AND o.date_purchased < %s
+    GROUP BY month
+    ORDER BY month
+"""
+
+        cursor.execute(query, (start, end))
+        results = cursor.fetchall()
+
+        # Convert Decimal to float
+        for row in results:
+            row["totalSales"] = float(row["totalSales"])
+
+       
+        return jsonify(results)
+
+    except Exception as e:
+        print("Error:", e)
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/sales/by-org", methods=["GET"])
+@jwt_required()
+def sales_by_org_dates():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    claims = get_jwt()
+    role = claims.get("role", 0)
+
+    if role != 1:
+        return jsonify({"error": "Unauthorized"}), 403
+    start = request.args.get("start")
+    end = request.args.get("end")
+    if not start or not end:
+        return jsonify({"error": "Missing start or end date"})
+    try:
+        cursor.execute("SELECT org.id AS organization_id, org.name AS organization_name, SUM(l.price * o.qty) AS totalSales FROM organizations AS org JOIN listings AS l ON org.id = l.organization_id JOIN orders AS o ON o.listing_id = l.id WHERE o.date_purchased BETWEEN %s AND %s GROUP BY org.id, org.name ORDER BY totalSales DESC", (start, end))
+        
+        results = cursor.fetchall()
+        for row in results:
+            row["totalSales"] = float(row["totalSales"])
+
+        print(results)
+        return jsonify(results), 200
+    except Exception as e:
+        print("Error:", e)
+        return jsonify({"error": str(e)}), 500
+    
 
 @app.route("/organizations/<int:org_id>", methods=["PUT"])
 @jwt_required()
@@ -399,6 +468,7 @@ def update_organization(org_id):
         conn.commit()
 
         return jsonify({"message": "Organization updated successfully"}), 200
+        
 
     except Exception as e:
         print("Error:", e)
