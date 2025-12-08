@@ -5,7 +5,9 @@ import mysql.connector
 import bcrypt
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt, JWTManager
 from flask_jwt_extended import create_access_token
-from algoliasearch.search.client import SearchClient  # Version 4.x import
+from algoliasearch.search.client import SearchClient
+import asyncio
+from decimal import Decimal
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
@@ -47,42 +49,7 @@ def get_all_listings():
         cursor.close()
         conn.close()
 
-@app.route("/sync-algolia", methods=["POST"])
-def sync_algolia():
-    """One-time sync to push all your listings to Algolia"""
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    try:
-        cursor.execute("SELECT * FROM listings WHERE state = 'pending'")
-        rows = cursor.fetchall()
         
-        # Format data for Algolia
-        algolia_objects = []
-        for listing in rows:
-            algolia_objects.append({
-                'objectID': str(listing['id']),
-                'id': listing['id'],
-                'event_name': listing['event_name'],
-                'description': listing['description'],
-                'price': listing['price'],
-                'state': listing['state'],
-            })
-        
-        # Send to Algolia - Version 4.x way
-        if algolia_objects:
-            client.save_objects(
-                index_name='listings',
-                objects=algolia_objects
-            )
-        
-        return jsonify({"message": f"Synced {len(algolia_objects)} listings to Algolia"}), 200
-    except Exception as e:
-        print("Error syncing to Algolia:", e)
-        return jsonify({"error": str(e)}), 500
-    finally:
-        cursor.close()
-        conn.close()
-
 # @app.route("/customer-all-listings", methods=["GET"])
 # def get_all_listings():
 #     conn = get_db_connection()
