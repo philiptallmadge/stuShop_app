@@ -7,6 +7,8 @@ export default function CustomerAllListings() {
   const navigate = useNavigate();
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
+  // NEW STATE: For the search input
+  const [searchTerm, setSearchTerm] = useState('');
 
   function parseJwt(token) {
     try { return JSON.parse(atob(token.split(".")[1])); }
@@ -38,6 +40,27 @@ export default function CustomerAllListings() {
     fetchListings();
   }, [navigate]);
 
+
+  // NEW LOGIC: Filter listings based on the search term
+  const filteredListings = listings.filter(listing => {
+      if (!searchTerm) return true; // Show all if search term is empty
+
+      const lowerSearchTerm = searchTerm.toLowerCase();
+
+      // Check listing title (event_name)
+      const titleMatch = (listing.event_name ?? '').toLowerCase().includes(lowerSearchTerm);
+
+      // Check description
+      const descriptionMatch = (listing.description ?? '').toLowerCase().includes(lowerSearchTerm);
+
+      // Check price (convert to string for searching, accounting for $ and cents)
+      const priceString = (listing.price ?? '').toString();
+      const priceMatch = priceString.includes(lowerSearchTerm);
+
+      return titleMatch || descriptionMatch || priceMatch;
+  });
+
+
   if (loading) {
     return (
       <div className={styles.container}>
@@ -66,9 +89,21 @@ export default function CustomerAllListings() {
           </button>
         </div>
 
-        {listings.length > 0 ? (
+        {/* Search Bar */}
+        <div className={styles.searchContainer}>
+            <input
+                type="text"
+                placeholder="Search by Title, Description, or Price..."
+                className={styles.searchInput}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+            />
+        </div>
+
+        {filteredListings.length > 0 ? (
           <div className={styles.listingsGrid}>
-            {listings.map((listing) => (
+            {/* Map over the FILTERED list */}
+            {filteredListings.map((listing) => (
               <div
                 key={listing.id}
                 className={styles.listingCard}

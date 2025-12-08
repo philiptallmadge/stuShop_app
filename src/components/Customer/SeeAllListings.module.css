@@ -16,9 +16,10 @@
   background: linear-gradient(135deg, #0c2340 0%, #0a1929 50%, #00843d 100%);
   position: relative;
   overflow-x: hidden;
+  color: white; 
 }
 
-/* Animated background elements */
+/* Animated background elements (omitted for brevity) */
 .container::before {
   content: '';
   position: absolute;
@@ -138,6 +139,36 @@
 .backButton:hover {
   background: linear-gradient(135deg, var(--nd-navy) 0%, var(--nd-green) 100%);
 }
+
+/* Search Bar Styles */
+.searchContainer {
+    margin-bottom: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.searchInput {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--nd-gold);
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    color: var(--nd-navy); /* Dark text inside search */
+    background-color: white;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.searchInput:focus {
+    outline: none;
+    border-color: var(--nd-green);
+    box-shadow: 0 0 0 1px var(--nd-green);
+}
+.searchInput::placeholder {
+    color: #999;
+}
+
 
 /* Listings Grid */
 .listingsGrid {
