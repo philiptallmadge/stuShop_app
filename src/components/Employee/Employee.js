@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
+
 import { useNavigate } from "react-router-dom";
 import {getEmployeeById} from "../../Services/employeeService.js"
 import {getOrganizations, getOrganizationById, getListingsByOrganizationId, getOrdersByListing} from "../../Services/organizationService.js"
 import styles from "./Employee.module.css"; 
-
+import Dashboard from "./Dashboard"
 
 export default function Employee() {
     const navigate = useNavigate();
@@ -288,6 +289,7 @@ export default function Employee() {
 
                 </div>
             </div>
+            < Dashboard  token={localStorage.getItem("authToken")}/>
         </div>
   );
 }
