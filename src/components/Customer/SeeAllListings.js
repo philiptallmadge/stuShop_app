@@ -1,20 +1,165 @@
+// import React, { useState, useEffect } from "react";
+// import { getCustomerById, getAllListings } from "../../Services/customerService.js";
+// import { useNavigate } from "react-router-dom";
+// import styles from "./SeeAllListings.module.css"; 
+
+// export default function CustomerAllListings() {
+//   const navigate = useNavigate();
+//   const [listings, setListings] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   // NEW STATE: For the search input
+//   const [searchTerm, setSearchTerm] = useState('');
+
+//   function parseJwt(token) {
+//     try { return JSON.parse(atob(token.split(".")[1])); }
+//     catch { return null; }
+//   }
+
+//   useEffect(() => {
+//     const fetchListings = async () => {
+//       try {
+//         const token = localStorage.getItem("authToken");
+//         if (!token) {
+//           navigate("/");
+//           return;
+//         }
+
+//         // Fetch all listings from all organizations
+//         const allListings = await getAllListings(token);
+//         // Filter only pending listings
+//         const pendingListings = allListings.filter(listing => listing.state === "pending");
+//         setListings(pendingListings);
+        
+//         setLoading(false);
+//       } catch (err) {
+//         console.error("Error fetching listings:", err);
+//         setLoading(false);
+//       }
+//     };
+    
+//     fetchListings();
+//   }, [navigate]);
+
+
+//   // NEW LOGIC: Filter listings based on the search term
+//   const filteredListings = listings.filter(listing => {
+//       if (!searchTerm) return true; // Show all if search term is empty
+
+//       const lowerSearchTerm = searchTerm.toLowerCase();
+
+//       // Check listing title (event_name)
+//       const titleMatch = (listing.event_name ?? '').toLowerCase().includes(lowerSearchTerm);
+
+//       // Check description
+//       const descriptionMatch = (listing.description ?? '').toLowerCase().includes(lowerSearchTerm);
+
+//       // Check price (convert to string for searching, accounting for $ and cents)
+//       const priceString = (listing.price ?? '').toString();
+//       const priceMatch = priceString.includes(lowerSearchTerm);
+
+//       return titleMatch || descriptionMatch || priceMatch;
+//   });
+
+
+//   if (loading) {
+//     return (
+//       <div className={styles.container}>
+//         <p className={styles.loadingMessage}>Loading...</p>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className={styles.container}>
+//       <div className={styles.contentWrapper}>
+//         <h2 className={styles.pageTitle}>All Available Listings</h2>
+        
+//         <div className={styles.topButtonContainer}>
+//           <button
+//             className={styles.backButton}
+//             onClick={() => navigate("/customer")}
+//           >
+//             Dashboard
+//           </button>
+//           <button
+//             className={styles.cartButton}
+//             onClick={() => navigate("/customer/cart")}
+//           >
+//             My Cart 🛒
+//           </button>
+//         </div>
+
+//         {/* Search Bar */}
+//         <div className={styles.searchContainer}>
+//             <input
+//                 type="text"
+//                 placeholder="Search by Title, Description, or Price..."
+//                 className={styles.searchInput}
+//                 value={searchTerm}
+//                 onChange={(e) => setSearchTerm(e.target.value)}
+//             />
+//         </div>
+
+//         {filteredListings.length > 0 ? (
+//           <div className={styles.listingsGrid}>
+//             {/* Map over the FILTERED list */}
+//             {filteredListings.map((listing) => (
+//               <div
+//                 key={listing.id}
+//                 className={styles.listingCard}
+//                 onClick={() => {
+//                   localStorage.setItem("selectedListing", JSON.stringify(listing));
+//                   navigate(`/customer/listing/${listing.id}`);
+//                 }}
+//               >
+//                 <h3 className={styles.listingTitle}>{listing.event_name}</h3>
+//                 <p className={styles.listingPrice}>${listing.price}</p>
+//                 <p className={styles.listingDescription}>
+//                   {listing.description}
+//                 </p>
+//                 <div className={styles.listingFooter}>
+//                   <span className={styles.listingStatus}>
+//                     Status: <strong>{listing.state}</strong>
+//                   </span>
+//                 </div>
+//               </div>
+//             ))}
+//           </div>
+//         ) : (
+//           <div className={styles.emptyState}>
+//             <p>No listings available at this time.</p>
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// }
+
+
 import React, { useState, useEffect } from "react";
-import { getCustomerById, getAllListings } from "../../Services/customerService.js";
+import { getAllListings } from "../../Services/customerService.js";
 import { useNavigate } from "react-router-dom";
+import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import styles from "./SeeAllListings.module.css"; 
 
 export default function CustomerAllListings() {
   const navigate = useNavigate();
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
-  // NEW STATE: For the search input
   const [searchTerm, setSearchTerm] = useState('');
+  const [searchClient, setSearchClient] = useState(null);
 
-  function parseJwt(token) {
-    try { return JSON.parse(atob(token.split(".")[1])); }
-    catch { return null; }
-  }
+  // Initialize Algolia - runs once when component loads
+  useEffect(() => {
+    // Replace these with your actual Algolia credentials
+    const APP_ID = '3FWY1AXMND';
+    const SEARCH_API_KEY = 'c26f9600826e02d2ee418ddbe395be69';  // Use Search-Only API Key from Algolia dashboard
+    
+    const client = algoliasearch(APP_ID, SEARCH_API_KEY);
+    setSearchClient(client);
+  }, []);
 
+  // Fetch initial listings when page loads
   useEffect(() => {
     const fetchListings = async () => {
       try {
@@ -24,12 +169,9 @@ export default function CustomerAllListings() {
           return;
         }
 
-        // Fetch all listings from all organizations
         const allListings = await getAllListings(token);
-        // Filter only pending listings
         const pendingListings = allListings.filter(listing => listing.state === "pending");
         setListings(pendingListings);
-        
         setLoading(false);
       } catch (err) {
         console.error("Error fetching listings:", err);
@@ -40,26 +182,52 @@ export default function CustomerAllListings() {
     fetchListings();
   }, [navigate]);
 
+  // Search with Algolia whenever user types
+  useEffect(() => {
+    // Only search if we have a search term
+    if (!searchClient || !searchTerm.trim()) {
+      return;
+    }
 
-  // NEW LOGIC: Filter listings based on the search term
-  const filteredListings = listings.filter(listing => {
-      if (!searchTerm) return true; // Show all if search term is empty
+    // Debounce: wait 300ms after user stops typing before searching
+    const timeoutId = setTimeout(async () => {
+      try {
+        const results = await searchClient.search({
+          requests: [
+            {
+              indexName: 'listings',
+              query: searchTerm,
+            },
+          ],
+        });
+        
+        setListings(results.results[0].hits);
+      } catch (err) {
+        console.error("Search error:", err);
+      }
+    }, 300);
 
-      const lowerSearchTerm = searchTerm.toLowerCase();
+    // Cleanup function to cancel previous timeout
+    return () => clearTimeout(timeoutId);
+  }, [searchTerm, searchClient]);
 
-      // Check listing title (event_name)
-      const titleMatch = (listing.event_name ?? '').toLowerCase().includes(lowerSearchTerm);
+  // Handle when user types in search box
+  const handleSearchChange = async (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
 
-      // Check description
-      const descriptionMatch = (listing.description ?? '').toLowerCase().includes(lowerSearchTerm);
-
-      // Check price (convert to string for searching, accounting for $ and cents)
-      const priceString = (listing.price ?? '').toString();
-      const priceMatch = priceString.includes(lowerSearchTerm);
-
-      return titleMatch || descriptionMatch || priceMatch;
-  });
-
+    // If search box is cleared, reload all listings from database
+    if (!value.trim()) {
+      try {
+        const token = localStorage.getItem("authToken");
+        const allListings = await getAllListings(token);
+        const pendingListings = allListings.filter(listing => listing.state === "pending");
+        setListings(pendingListings);
+      } catch (err) {
+        console.error("Error reloading listings:", err);
+      }
+    }
+  };
 
   if (loading) {
     return (
@@ -89,21 +257,20 @@ export default function CustomerAllListings() {
           </button>
         </div>
 
-        {/* Search Bar */}
+        {/* Algolia Search Bar */}
         <div className={styles.searchContainer}>
-            <input
-                type="text"
-                placeholder="Search by Title, Description, or Price..."
-                className={styles.searchInput}
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-            />
+          <input
+            type="text"
+            placeholder="Search by Title, Description, or Price..."
+            className={styles.searchInput}
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
         </div>
 
-        {filteredListings.length > 0 ? (
+        {listings.length > 0 ? (
           <div className={styles.listingsGrid}>
-            {/* Map over the FILTERED list */}
-            {filteredListings.map((listing) => (
+            {listings.map((listing) => (
               <div
                 key={listing.id}
                 className={styles.listingCard}
@@ -127,7 +294,7 @@ export default function CustomerAllListings() {
           </div>
         ) : (
           <div className={styles.emptyState}>
-            <p>No listings available at this time.</p>
+            <p>No listings found.</p>
           </div>
         )}
       </div>
