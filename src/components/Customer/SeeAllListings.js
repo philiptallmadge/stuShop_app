@@ -148,6 +148,7 @@ export default function CustomerAllListings() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchClient, setSearchClient] = useState(null);
+  const [isSyncing, setIsSyncing] = useState(false);
 
   // Initialize Algolia - runs once when component loads
   useEffect(() => {
@@ -229,6 +230,29 @@ export default function CustomerAllListings() {
     }
   };
 
+  const handleSync = async () => {
+    setIsSyncing(true);
+    try {
+      // Make sure this URL matches your Flask backend port (usually 5000)
+      const response = await fetch("http://localhost:5000/sync-algolia", {
+        method: "GET", // Matches the route we set up in app.py
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        alert("Success: " + data.message);
+      } else {
+        alert("Sync Failed: " + data.error);
+      }
+    } catch (error) {
+      console.error("Sync error:", error);
+      alert("Error connecting to backend.");
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className={styles.container}>
@@ -255,6 +279,19 @@ export default function CustomerAllListings() {
           >
             My Cart 🛒
           </button>
+
+          <button
+            className={styles.cartButton} // Re-using cart style for consistency
+            onClick={handleSync}
+            disabled={isSyncing} // Disable button while it's running
+            style={{ 
+              backgroundColor: isSyncing ? '#6c757d' : '#28a745', // Grey if loading, Green if ready
+              marginLeft: '10px' 
+            }} 
+          >
+            {isSyncing ? "Syncing..." : "Sync Search"}
+          </button>
+          
         </div>
 
         {/* Algolia Search Bar */}
