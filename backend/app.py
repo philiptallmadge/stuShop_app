@@ -40,23 +40,16 @@ def serialize_for_algolia(rows):
         item = row.copy()
         item['objectID'] = str(item['id'])
         
-        # 1. Handle Decimals and Dates (Your existing logic)
         for key, value in item.items():
             if isinstance(value, Decimal):
                 item[key] = float(value)
             elif isinstance(value, (datetime.date, datetime.datetime)):
                 item[key] = value.isoformat()
 
-        # 2. Handle Organization Name
-        # We rename 'organization_name' to just 'organization' for cleaner search
         if 'organization_name' in item:
             item['organization'] = item['organization_name']
-            # Clean up: remove the temporary SQL alias so it doesn't duplicate
             item.pop('organization_name', None)
             
-        # 3. Safety: Remove organization_id if you don't need it searchable
-        # (Optional, keeps the index clean)
-        # item.pop('organization_id', None)
 
         serialized.append(item)
     return serialized
@@ -66,8 +59,6 @@ def sync_algolia():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     try:
-        # QUERY CHANGE: We fetch the listing, plus the organization NAME.
-        # We purposely do NOT select organizations.* to avoid the 'image' blob.
         query = """
             SELECT listings.*, organizations.name as organization_name
             FROM listings
