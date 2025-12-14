@@ -5,7 +5,11 @@ import mysql.connector
 import bcrypt
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt, JWTManager
 from flask_jwt_extended import create_access_token
-from algoliasearch.search.client import SearchClient  # Version 4.x import
+# from algoliasearch.search.client import SearchClient
+from algoliasearch.search.client import SearchClientSync
+import asyncio
+from decimal import Decimal
+import datetime
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
@@ -22,10 +26,10 @@ jwt = JWTManager(app)
 
 # ALGOLIA CONFIG
 ALGOLIA_APP_ID = "3FWY1AXMND"
-ALGOLIA_ADMIN_API_KEY = "c26f9600826e02d2ee418ddbe395be69"
+ALGOLIA_ADMIN_API_KEY = "1dbb43881479cfa625e9e16727a638ba"
 
 # Version 4.x way to create client
-client = SearchClient(ALGOLIA_APP_ID, ALGOLIA_ADMIN_API_KEY)
+client = SearchClientSync(ALGOLIA_APP_ID, ALGOLIA_ADMIN_API_KEY)
 
 def get_db_connection():
     return mysql.connector.connect(
@@ -34,6 +38,65 @@ def get_db_connection():
         password="Bepagy09_",
         database="mleal2"
     )
+
+def serialize_for_algolia(rows):
+    serialized = []
+    for row in rows:
+        item = row.copy()
+        item['objectID'] = str(item['id'])
+        
+        for key, value in item.items():
+            if isinstance(value, Decimal):
+                item[key] = float(value)
+            elif isinstance(value, (datetime.date, datetime.datetime)):
+                item[key] = value.isoformat()
+
+        if 'organization_name' in item:
+            item['organization'] = item['organization_name']
+            item.pop('organization_name', None)
+            
+
+        serialized.append(item)
+    return serialized
+
+@app.route("/sync-algolia", methods=["GET"])
+def sync_algolia():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        query = """
+            SELECT listings.*, organizations.name as organization_name
+            FROM listings
+            LEFT JOIN organizations ON listings.organization_id = organizations.id
+            WHERE listings.state = 'pending'
+        """
+        
+        cursor.execute(query)
+        rows = cursor.fetchall()
+        
+        if not rows:
+            return jsonify({"message": "No listings to sync"}), 200
+
+        # Process the data
+        objects_to_save = serialize_for_algolia(rows)
+
+        # Send to Algolia
+        client.save_objects(
+            index_name="listings",
+            objects=objects_to_save
+        )
+        
+        return jsonify({
+            "status": "success", 
+            "message": f"Synced {len(objects_to_save)} listings (with Org Names) to Algolia!"
+        }), 200
+
+    except Exception as e:
+        print("Sync Error:", e)
+        return jsonify({"error": str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
 
 @app.route("/customer-all-listings", methods=["GET"])
 def get_all_listings():
@@ -52,42 +115,7 @@ def get_all_listings():
         cursor.close()
         conn.close()
 
-@app.route("/sync-algolia", methods=["POST"])
-def sync_algolia():
-    """One-time sync to push all your listings to Algolia"""
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    try:
-        cursor.execute("SELECT * FROM listings WHERE state = 'pending'")
-        rows = cursor.fetchall()
         
-        # Format data for Algolia
-        algolia_objects = []
-        for listing in rows:
-            algolia_objects.append({
-                'objectID': str(listing['id']),
-                'id': listing['id'],
-                'event_name': listing['event_name'],
-                'description': listing['description'],
-                'price': listing['price'],
-                'state': listing['state'],
-            })
-        
-        # Send to Algolia - Version 4.x way
-        if algolia_objects:
-            client.save_objects(
-                index_name='listings',
-                objects=algolia_objects
-            )
-        
-        return jsonify({"message": f"Synced {len(algolia_objects)} listings to Algolia"}), 200
-    except Exception as e:
-        print("Error syncing to Algolia:", e)
-        return jsonify({"error": str(e)}), 500
-    finally:
-        cursor.close()
-        conn.close()
-
 # @app.route("/customer-all-listings", methods=["GET"])
 # def get_all_listings():
 #     conn = get_db_connection()
