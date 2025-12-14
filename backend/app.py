@@ -107,7 +107,8 @@ def get_completed_orders(listing_id):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     try:
-        cursor.execute("SELECT * FROM orders WHERE listing_id = %s AND status = 'completed'", (listing_id,))
+        cursor.execute("SELECT * FROM orders WHERE listing_id = %s", (listing_id,))
+        # cursor.execute("SELECT * FROM orders WHERE listing_id = %s AND status = 'completed'", (listing_id,))
         rows = cursor.fetchall()
         return jsonify(rows), 200
     except Exception as e:
@@ -696,7 +697,7 @@ def create_order():
         listing_id = data.get("listing_id")
         event_name = data.get("event_name")
         paid = data.get("price")
-        picture = data.get("picture", "")
+        # picture = data.get("picture", "")
         status = data.get("status")
         owner_id = data.get("owner_id")
 
@@ -706,10 +707,10 @@ def create_order():
         cursor.execute(
             """
             INSERT INTO orders
-            (first_name, last_name, grade, size, qty, listing_id, event_name, paid, picture, status, owner_id, date_purchased)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
+            (first_name, last_name, grade, size, qty, listing_id, event_name, paid, status, owner_id, date_purchased)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
             """,
-            (first_name, last_name, grade, size, qty, listing_id, event_name, paid, picture, status, owner_id)
+            (first_name, last_name, grade, size, qty, listing_id, event_name, paid, status, owner_id)
         )
 
         if size:
