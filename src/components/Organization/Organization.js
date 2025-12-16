@@ -220,8 +220,19 @@ export default function Organization() {
         <h1 className={styles.welcomeHeader}>
           Welcome, {organization.name}!
         </h1>
+         <div className={styles.buttonContainer}>
+            <button 
+              className={styles.logoutButton}
+              onClick={() => {
+              localStorage.removeItem("authToken");
+              navigate("/");
+            }}
+            >
+              Log out
+            </button>
+            </div>
       </div>
-
+      
       <div className={styles.listingsGrid}>
         <div className={styles.listingColumn}>
           <h2 className={styles.pendingHeader}>

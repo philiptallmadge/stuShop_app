@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
-import {getEmployeeById} from "../../Services/employeeService.js"
+import {getEmployeeById, getIncompleteOrders, setCompleteOrder} from "../../Services/employeeService.js"
 import {getOrganizations, getOrganizationById, getListingsByOrganizationId, getOrdersByListing} from "../../Services/organizationService.js"
 import styles from "./Employee.module.css"; 
 import Dashboard from "./Dashboard"
+import IncompleteOrders from "./IncompleteOrders"
 
 export default function Employee() {
     const navigate = useNavigate();
@@ -22,9 +23,35 @@ export default function Employee() {
 
     const [selectedOrgId, setSelectedOrgId] = useState(null);
     const [selectedListingId, setSelectedListingId] = useState(null); 
-    // new state for seaarch input
+    // new state for search input
     const [orderSearchTerm, setOrderSearchTerm] = useState('');
 
+    const [IncompleteOrdersList, IncompleteOrdersSetOrders] = useState([]);
+    const [IncompleteOrdersLoading, IncompleteOrdersSetLoading] = useState(true);
+    const [IncompleteOrdersError, IncompleteOrdersSetError] = useState(null);
+
+    useEffect(() => {
+      async function fetchIncompleteOrders() {
+        try {
+          IncompleteOrdersSetLoading(true);
+          const token = localStorage.getItem("authToken");
+          const res = await getIncompleteOrders(null, token);
+          IncompleteOrdersSetOrders(res);
+          IncompleteOrdersSetLoading(false);
+        } catch {
+          IncompleteOrdersSetError("Failed to load orders");
+        } finally {
+          IncompleteOrdersSetLoading(false);
+        }
+      }
+      fetchIncompleteOrders();
+    }, []);
+
+    async function handleMarkComplete(orderId) {
+        const token = localStorage.getItem("authToken");
+        setCompleteOrder(orderId, token);
+        IncompleteOrdersSetOrders((prev) => prev.filter((o) => o.id !== orderId));
+    }
     const fetchOrdersByListing = async (lisId) => {
         try {
           const token = localStorage.getItem("authToken");
@@ -161,7 +188,10 @@ export default function Employee() {
                     {/* REMOVED: Show All Organizations Button */}
                     <button 
                       className={styles.logoutButton}
-                      onClick={() => navigate("/")}
+                      onClick={() => {
+                      localStorage.removeItem("authToken");
+                      navigate("/");
+                    }}
                     >
                       Log out
                     </button>
@@ -289,6 +319,12 @@ export default function Employee() {
 
                 </div>
             </div>
+            <IncompleteOrders
+                orders={IncompleteOrdersList}
+                onMarkComplete={handleMarkComplete}
+                loading={IncompleteOrdersLoading}
+                error={IncompleteOrdersError}
+            />
             < Dashboard  token={localStorage.getItem("authToken")}/>
         </div>
   );

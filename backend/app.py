@@ -189,10 +189,6 @@ def create_account():
         conn.rollback()
         return jsonify({"error": str(e)}), 500
 
-# export function getAllCompletedOrders(listingId,token) {
-#   return apiRequest(`/organizations/listings/${listingId}/completed-orders`, "GET", null, token);
-# }
-
 @app.route("/organizations/listings/<int:listing_id>/completed-orders", methods=["GET", "OPTIONS"])
 @jwt_required()
 def get_completed_orders(listing_id):
@@ -269,8 +265,29 @@ def sign_in_authentication():
     except Exception as e:
         print("Error:", e)
         return jsonify({"error": str(e)}), 500
-    
 
+@app.route("/employees/setComplete", methods=["PUT"])
+@jwt_required()
+def set_complete():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    data = request.get_json()
+    required_fields = ["OrderId"]
+    for field in required_fields:
+        if field not in data or not data[field]:
+            return jsonify({"error": f"missing required field: {field}"}, 400)
+    cursor.execute("UPDATE orders set status = %s where id = %s", ("Complete", data["OrderId"]))    
+    conn.commit()
+    return jsonify({"message": "Order updated successfully"}), 200
+
+@app.route("/employees/getIncompleteOrders", methods=["GET"])
+@jwt_required()
+def getIncompleteOrders():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM orders where status='pending'")
+    rows = cursor.fetchall()
+    return jsonify(rows)
 @app.route("/employees")
 @jwt_required()
 def get_employees():

@@ -58,7 +58,10 @@ export default function Customer() {
         </button>
         <button
           className={styles.logoutButton}
-          onClick={() => navigate("/")}
+          onClick={() => {
+            localStorage.removeItem("authToken");
+            navigate("/");
+          }}
         >
           Log out
         </button>
